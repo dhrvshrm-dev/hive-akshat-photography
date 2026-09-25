@@ -11,7 +11,7 @@ export async function POST(request) {
     return NextResponse.json({ message: "Invalid request." }, { status: 400 });
   }
 
-  const { name, email, phone, eventType, date, message, company } = data;
+  const { name, email, phone, eventType, date, location, message, company } = data;
 
   // Honeypot: real people never fill this hidden field. Bots do.
   if (company) {
@@ -28,11 +28,11 @@ export async function POST(request) {
   }
 
   // For now, just log the enquiry so you can see it in your terminal.
-  console.log("New enquiry:", { name, email, phone, eventType, date, message });
+  console.log("New enquiry:", { name, email, phone, eventType, date, location, message });
 
   // ---- 1) SAVE TO DATABASE (optional) --------------------------------------
   // Example with a Postgres client / Supabase — install and configure first.
-  // await db.insert("enquiries", { name, email, phone, eventType, date, message });
+  // await db.insert("enquiries", { name, email, phone, eventType, date, location, message });
 
   // ---- 2) SEND EMAIL TO AKSHAT (optional) ----------------------------------
   // Example with Resend (https://resend.com):
@@ -43,7 +43,7 @@ export async function POST(request) {
   //   from: "Website <query@hiveakshat.com>",
   //   to: process.env.CONTACT_TO_EMAIL,
   //   subject: `New enquiry from ${name}`,
-  //   text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nEvent: ${eventType}\nDate: ${date}\n\n${message}`,
+  //   text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nShoot: ${eventType}\nWhere: ${location}\nDates: ${date}\n\n${message}`,
   // });
   // --------------------------------------------------------------------------
 

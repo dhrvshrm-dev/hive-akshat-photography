@@ -5,8 +5,8 @@ import CTA from "@/components/sections/CTA";
 import { testimonials } from "@/data/testimonials";
 
 export const metadata = {
-  title: "Testimonials — Hive Akshat Photography",
-  description: "Words from couples and families photographed by Hive Akshat.",
+  title: "Kind words — Hive Akshat Photography",
+  description: "What hotels, tourism teams, editors and expedition guests say about working with Hive Akshat.",
 };
 
 export default function TestimonialsPage() {
@@ -14,21 +14,21 @@ export default function TestimonialsPage() {
     <>
       <PageHeader
         eyebrow="Kind words"
-        title="What couples say"
-        intro="Nothing means more than a family trusting us with their day. Here's what a few of them had to say."
+        title={[{ text: "Word from" }, { text: "the road.", emphasis: true }]}
+        intro="From hotels and tourism teams to the people who got up at four in the morning to come along."
       />
-      <section className="py-24">
+      <section className="bg-night py-20 md:py-28">
         <Container>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-px bg-line md:grid-cols-2">
             {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={(i % 2) * 0.08} className="group h-full">
-                <figure className="flex h-full flex-col border border-line p-8 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1 group-hover:border-rose/40 group-hover:bg-blush/40">
-                  <blockquote className="flex-1 font-display text-xl leading-relaxed text-ink">
-                    “{t.quote}”
-                  </blockquote>
-                  <figcaption className="mt-6 border-t border-line pt-4">
-                    <p className="text-sm text-ink">{t.name}</p>
-                    <p className="text-xs uppercase tracking-widest text-rose">{t.event}</p>
+              <Reveal key={i} delay={(i % 2) * 0.08} className="group h-full bg-night">
+                <figure className="relative flex h-full flex-col p-8 transition-colors duration-500 group-hover:bg-soot md:p-12">
+                  <span className="brackets pointer-events-none absolute inset-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ "--c": "#F0782D" }} />
+                  <span className="font-mono text-[10px] tracking-hud text-bone/35">{String(i + 1).padStart(2, "0")}</span>
+                  <blockquote className="mt-6 flex-1 font-display text-2xl leading-snug text-bone md:text-3xl">“{t.quote}”</blockquote>
+                  <figcaption className="mt-8 font-mono text-[10px] uppercase tracking-hud">
+                    <span className="text-bone">{t.name}</span>
+                    <span className="text-bone/45"> · {t.org}</span>
                   </figcaption>
                 </figure>
               </Reveal>

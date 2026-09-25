@@ -1,13 +1,15 @@
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
-import Reveal from "@/components/ui/Reveal";
+import SectionHeading from "@/components/ui/SectionHeading";
+import ServiceList from "@/components/sections/ServiceList";
+import Departures from "@/components/sections/Departures";
 import Process from "@/components/sections/Process";
 import CTA from "@/components/sections/CTA";
-import { services } from "@/data/services";
 
 export const metadata = {
   title: "Services — Hive Akshat Photography",
-  description: "Wedding photography, pre-wedding shoots, event coverage and films by Hive Akshat, Ajmer.",
+  description:
+    "Tourism campaigns, hotel and heritage photography, temple and festival documentation, fine-art prints, photo walks and wildlife — by Hive Akshat, Ajmer.",
 };
 
 export default function ServicesPage() {
@@ -15,31 +17,28 @@ export default function ServicesPage() {
     <>
       <PageHeader
         eyebrow="Services"
-        title="What we offer"
-        intro="Every wedding and event is different. Here's how we usually work — packages can be shaped around your day."
+        title={[{ text: "Pictures that" }, { text: "move people.", emphasis: true }]}
+        intro="For tourism boards, hotels, temple trusts, publications — and anyone who wants to see a place properly. Every brief is shaped around the destination and its light."
+        meta="Based in Ajmer · Travels across India"
       />
-      <section className="py-24">
-        <Container className="space-y-px bg-line">
-          {services.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.05} className="bg-ivory">
-              <div className="grid gap-6 p-8 md:grid-cols-[1fr_2fr] md:p-12">
-                <h2 className="font-display text-2xl text-ink md:text-3xl">{s.title}</h2>
-                <div>
-                  <p className="text-taupe">{s.summary}</p>
-                  <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-2">
-                    {s.points.map((p) => (
-                      <li key={p} className="text-sm text-ink before:mr-2 before:text-rose before:content-['—']">
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+      <section className="bg-night py-20 md:py-28">
+        <Container>
+          <ServiceList />
         </Container>
       </section>
       <Process />
+      <section className="bg-night py-24 md:py-32">
+        <Container>
+          <SectionHeading
+            index="→"
+            eyebrow="Photo walks & expeditions"
+            title={[{ text: "Next" }, { text: "departures.", emphasis: true }]}
+            intro="Small groups, early starts. Dates are indicative — message to hold a seat."
+            className="mb-14"
+          />
+          <Departures />
+        </Container>
+      </section>
       <CTA />
     </>
   );

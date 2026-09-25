@@ -2,58 +2,55 @@ import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import ContactForm from "@/components/forms/ContactForm";
+import GoldenHour from "@/components/forms/GoldenHour";
 import { site } from "@/data/site";
 
 export const metadata = {
   title: "Contact — Hive Akshat Photography",
-  description: "Enquire about wedding and event photography with Hive Akshat, Ajmer.",
+  description: "Plan a travel, heritage, hotel or festival shoot with Hive Akshat, based in Ajmer, Rajasthan.",
 };
 
 export default function ContactPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Contact"
-        title="Let's tell your story"
-        intro="Share a few details about your day and we'll be in touch within 24 hours."
+        eyebrow="Contact · Plan a shoot"
+        title={[{ text: "Tell me the place." }, { text: "I'll find the light.", emphasis: true }]}
+        intro="A few details and I'll come back within a day with dates, light windows and a plan."
       />
-      <section className="py-24">
+      <section className="bg-night py-20 md:py-28">
         <Container>
-          <div className="grid gap-14 md:grid-cols-[1fr_1.4fr]">
-            {/* Details */}
-            <Reveal>
-              <div className="space-y-8">
-                <div>
-                  <p className="mb-2 text-xs uppercase tracking-widest text-rose">Email</p>
-                  <a href={`mailto:${site.email}`} className="font-display text-xl text-ink hover:text-rose">
-                    {site.email}
-                  </a>
+          <div className="grid gap-16 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+            <div className="space-y-10">
+              <Reveal>
+                <div className="space-y-7">
+                  {[
+                    ["Email", site.email, `mailto:${site.email}`],
+                    ["Phone", site.phone, `tel:${site.phone.replace(/\s/g, "")}`],
+                    ["WhatsApp", "Message directly →", `https://wa.me/${site.whatsapp}`],
+                  ].map(([k, v, href]) => (
+                    <div key={k}>
+                      <p className="mb-2 font-mono text-[10px] uppercase tracking-hud text-bone/45">{k}</p>
+                      <a
+                        href={href}
+                        target={href.startsWith("http") ? "_blank" : undefined}
+                        rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                        className="link-sweep font-display text-2xl text-bone hover:text-saffron"
+                      >
+                        {v}
+                      </a>
+                    </div>
+                  ))}
+                  <div>
+                    <p className="mb-2 font-mono text-[10px] uppercase tracking-hud text-bone/45">Base</p>
+                    <p className="font-display text-2xl text-bone">{site.location}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="mb-2 text-xs uppercase tracking-widest text-rose">Phone</p>
-                  <a href={`tel:${site.phone}`} className="font-display text-xl text-ink hover:text-rose">
-                    {site.phone}
-                  </a>
-                </div>
-                <div>
-                  <p className="mb-2 text-xs uppercase tracking-widest text-rose">Based in</p>
-                  <p className="font-display text-xl text-ink">{site.location}</p>
-                </div>
-                <div>
-                  <p className="mb-2 text-xs uppercase tracking-widest text-rose">Prefer WhatsApp?</p>
-                  <a
-                    href={`https://wa.me/${site.whatsapp}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-display text-xl text-ink hover:text-rose"
-                  >
-                    Message us →
-                  </a>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Form */}
+              </Reveal>
+              <Reveal delay={0.1}>
+                <GoldenHour />
+              </Reveal>
+            </div>
             <Reveal delay={0.1}>
               <ContactForm />
             </Reveal>

@@ -4,51 +4,87 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-  }
-  body {
-    @apply bg-ivory text-ink font-sans antialiased;
-  }
-  ::selection {
-    @apply bg-rose text-ivory;
-  }
-}
-
-/* Respect users who prefer less motion */
-@media (prefers-reduced-motion: reduce) {
-  html {
+    background: #0a0908;
+    /* Lenis drives scrolling; native smooth-scroll would fight it. */
     scroll-behavior: auto;
   }
+  body {
+    @apply bg-night text-bone font-sans antialiased;
+    /* clip, not hidden: hidden would make body a scroll container and break
+       every position: sticky on the site. */
+    overflow-x: clip;
+  }
+  ::selection {
+    @apply bg-saffron text-night;
+  }
+  /* Fraunces at display sizes wants its soft, high-contrast optical cut. */
+  .font-display {
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
 }
 
-/* Custom cursor: the class is only added on fine-pointer, non-reduced-motion devices,
-   and the media query is a second guard so touch devices keep their native behaviour. */
+/* ---- Lenis ------------------------------------------------------------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ---- Intro curtain ------------------------------------------------------
+   Server-rendered, so a first-time visitor never sees the site flash before the
+   diya intro mounts. An inline script in <head> sets data-intro="skip" before
+   first paint for everyone who should not see it. */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: #050403;
+  pointer-events: none;
+}
+html[data-intro="skip"] .intro-curtain,
+html[data-intro="done"] .intro-curtain {
+  display: none;
+}
+
+/* ---- Film grain -------------------------------------------------------- */
+.grain {
+  position: fixed;
+  inset: -100%;
+  z-index: 95;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.2 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 0.9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---- Custom cursor ----------------------------------------------------- */
 @media (pointer: fine) {
   html.has-custom-cursor,
   html.has-custom-cursor * {
-    cursor: none;
+    cursor: none !important;
   }
 }
 
-/* Infinite logo marquee — duplicate the track content and slide it by half its width */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.marquee-track {
-  animation: marquee 32s linear infinite;
-  width: max-content;
-}
-.marquee-mask:hover .marquee-track {
-  animation-play-state: paused;
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
+/* ---- Marquee ----------------------------------------------------------- */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(237, 230, 218, 0.55);
 }
 
-/* Underline that sweeps in from the left on hover */
+/* ---- Hover underline --------------------------------------------------- */
 .link-sweep {
   position: relative;
 }
@@ -62,14 +98,14 @@
   background: currentColor;
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .link-sweep:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-/* Simple two-column masonry for the gallery, using CSS columns (no library needed) */
+/* ---- Masonry for the archive ------------------------------------------- */
 .masonry {
   column-count: 1;
   column-gap: 1rem;
@@ -83,4 +119,40 @@
 .masonry > * {
   break-inside: avoid;
   margin-bottom: 1rem;
+}
+
+/* ---- Film strip sprockets ---------------------------------------------- */
+.sprockets {
+  height: 18px;
+  background-image: radial-gradient(circle at center, transparent 0, transparent 0),
+    linear-gradient(90deg, rgba(237, 230, 218, 0.16) 0 14px, transparent 14px 30px);
+  background-size: 30px 10px;
+  background-repeat: repeat-x;
+  background-position: 0 center;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ---- Viewfinder corner brackets (pure CSS, sized by the box) ----------- */
+.brackets {
+  --b: 22px;
+  --t: 1px;
+  --c: rgba(237, 230, 218, 0.7);
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--b) var(--t),
+    linear-gradient(var(--c), var(--c)) top left / var(--t) var(--b),
+    linear-gradient(var(--c), var(--c)) top right / var(--b) var(--t),
+    linear-gradient(var(--c), var(--c)) top right / var(--t) var(--b),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--b) var(--t),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--t) var(--b),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--b) var(--t),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--t) var(--b);
+  background-repeat: no-repeat;
+}
+
+/* Hide scrollbars on horizontal strips without losing scroll. */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
 }
