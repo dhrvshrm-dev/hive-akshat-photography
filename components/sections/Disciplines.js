@@ -62,7 +62,7 @@ export default function Disciplines() {
   return (
     <section className="relative bg-night py-28 md:py-40">
       <Container>
-        <SectionHeading index="03" eyebrow="The archive" title={[{ text: "Five ways" }, { text: "of looking.", emphasis: true }]} />
+        <SectionHeading index="05" eyebrow="The archive" title={[{ text: "Five ways" }, { text: "of looking.", emphasis: true }]} />
       </Container>
 
       <div ref={areaRef} className="relative mt-16 md:mt-20" onMouseMove={fine ? onMove : undefined} onMouseLeave={() => setActive(null)}>

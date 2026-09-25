@@ -43,10 +43,19 @@ export default function DiyaIntro() {
   const canvasRef = useRef(null);
 
   const s = useRef({
-    x: 0, y: 0, tx: 0, ty: 0,
-    lastMove: 0, hasPointer: false,
-    holding: false, hold: 0, dawn: 0, dawnStart: 0,
-    phase: "dark", raf: 0, particles: [],
+    x: 0,
+    y: 0,
+    tx: 0,
+    ty: 0,
+    lastMove: 0,
+    hasPointer: false,
+    holding: false,
+    hold: 0,
+    dawn: 0,
+    dawnStart: 0,
+    phase: "dark",
+    raf: 0,
+    particles: [],
   });
 
   useEffect(() => {
@@ -214,7 +223,9 @@ export default function DiyaIntro() {
       const ring = ringRef.current;
       if (ring) {
         ring.style.transform = `translate3d(${st.x}px, ${st.y}px, 0) translate(-50%, -50%)`;
-        ring.style.opacity = String(st.hold > 0.01 && st.phase === "dark" ? 1 : 0);
+        ring.style.opacity = String(
+          st.hold > 0.01 && st.phase === "dark" ? 1 : 0,
+        );
         const c = ring.querySelector("circle[data-progress]");
         if (c) c.style.strokeDashoffset = String(176 * (1 - st.hold));
       }
@@ -269,7 +280,10 @@ export default function DiyaIntro() {
       role="dialog"
       aria-label="Intro — press and hold to light the lamp, or press Escape to skip"
       className="fixed inset-0 z-[200] select-none overflow-hidden bg-[#050403] touch-none"
-      style={{ opacity: phase === "out" ? 0 : 1, transition: "opacity 850ms cubic-bezier(0.22,1,0.36,1)" }}
+      style={{
+        opacity: phase === "out" ? 0 : 1,
+        transition: "opacity 850ms cubic-bezier(0.22,1,0.36,1)",
+      }}
     >
       {/* The ghat, seen only where the lamp light falls. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -298,7 +312,10 @@ export default function DiyaIntro() {
         }}
       />
 
-      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" />
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none absolute inset-0 h-full w-full"
+      />
 
       {/* Hold progress: a thin ring that closes round the lamp. */}
       <svg
@@ -309,7 +326,14 @@ export default function DiyaIntro() {
         className="pointer-events-none absolute left-0 top-0"
         style={{ opacity: 0, transition: "opacity 200ms" }}
       >
-        <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(237,230,218,0.15)" strokeWidth="1" />
+        <circle
+          cx="32"
+          cy="32"
+          r="28"
+          fill="none"
+          stroke="rgba(237,230,218,0.15)"
+          strokeWidth="1"
+        />
         <circle
           data-progress
           cx="32"
@@ -326,7 +350,12 @@ export default function DiyaIntro() {
 
       {/* The flame itself. */}
       <div ref={flameRef} className="pointer-events-none absolute left-0 top-0">
-        <svg width="34" height="58" viewBox="0 0 34 58" style={{ filter: "drop-shadow(0 0 14px rgba(255,170,80,0.9))" }}>
+        <svg
+          width="34"
+          height="58"
+          viewBox="0 0 34 58"
+          style={{ filter: "drop-shadow(0 0 14px rgba(255,170,80,0.9))" }}
+        >
           <defs>
             <radialGradient id="diya-flame" cx="50%" cy="72%" r="60%">
               <stop offset="0%" stopColor="#FFFBEA" />
@@ -335,8 +364,18 @@ export default function DiyaIntro() {
               <stop offset="100%" stopColor="#F0782D" stopOpacity="0" />
             </radialGradient>
           </defs>
-          <path d="M17 2 C 22 16, 31 26, 31 38 C 31 49, 24 56, 17 56 C 10 56, 3 49, 3 38 C 3 26, 12 16, 17 2 Z" fill="url(#diya-flame)" />
-          <ellipse cx="17" cy="44" rx="5" ry="8" fill="#FFFDF4" opacity="0.85" />
+          <path
+            d="M17 2 C 22 16, 31 26, 31 38 C 31 49, 24 56, 17 56 C 10 56, 3 49, 3 38 C 3 26, 12 16, 17 2 Z"
+            fill="url(#diya-flame)"
+          />
+          <ellipse
+            cx="17"
+            cy="44"
+            rx="5"
+            ry="8"
+            fill="#FFFDF4"
+            opacity="0.85"
+          />
         </svg>
       </div>
 
@@ -348,20 +387,29 @@ export default function DiyaIntro() {
 
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center px-6 pb-24 text-center md:pb-20"
-        style={{ opacity: phase === "dark" ? 1 : 0, transition: "opacity 600ms" }}
+        style={{
+          opacity: phase === "dark" ? 1 : 0,
+          transition: "opacity 600ms",
+        }}
       >
-        <p className="font-display text-3xl italic text-bone/90 md:text-5xl">Every journey begins in the dark.</p>
+        <p className="font-display text-3xl italic text-bone/90 md:text-5xl">
+          Every journey begins in the dark.
+        </p>
         <p className="mt-5 font-mono text-[10px] uppercase tracking-hud text-bone/50">
-          {touched ? "Keep holding…" : (
+          {touched ? (
+            "Keep holding…"
+          ) : (
             <>
-              <span className="hidden md:inline">Move to look around · </span>Press &amp; hold to light the diya
+              <span className="hidden md:inline">Move to look around · </span>
+              Press &amp; hold to light the diya
             </>
           )}
         </p>
       </div>
 
       <div className="pointer-events-none absolute bottom-6 left-6 hidden font-mono text-[10px] uppercase tracking-hud text-bone/35 md:block md:bottom-8 md:left-8">
-        {shot.place} · {fmtCoords(shot.lat, shot.lon)} · {fmtTakenTime(shot.exif.taken)} IST
+        {shot.place} · {fmtCoords(shot.lat, shot.lon)} ·{" "}
+        {fmtTakenTime(shot.exif.taken)} IST
       </div>
 
       <button

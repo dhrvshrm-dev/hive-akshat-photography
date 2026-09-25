@@ -13,6 +13,8 @@ The whole site is designed as if you are looking through a camera:
 | Cursor (desktop) | An **AF point** that locks onto links and buttons. |
 | Touch (phones) | **Tap-to-focus** — a focus box appears and locks wherever you tap. |
 | Page changes | A **camera aperture** closes and opens between routes. |
+| Home · Recognition | Commissioning bodies as **press passes** that swing on lanyards with the scroll. |
+| Home · Films (`/#films`) | Drone / wildlife films with a live **drone OSD** or **REC** overlay; plays in a letterboxed cinema. YouTube only loads on play. |
 | `/journeys` | Self-drawing **map of India** with the route, chapters with a sticky refocusing viewfinder, and the filterable archive with a review-screen lightbox (EXIF + live histogram). |
 
 ---
@@ -49,6 +51,8 @@ data/                     ← EDIT CONTENT HERE
   journeys.js             The journeys (map pins + chapters), in route order
   services.js             Services, process, photo-walk departures
   testimonials.js         Quotes
+  recognition.js          Press passes: Ministry of Tourism and other commissioning bodies
+  films.js                Drone & wildlife films — add each YouTube video ID here
   site.js                 Contact details, nav, manifesto text
   indiaMap.js             India outline (Government of India boundary) + projection
 lib/                      Motion tokens, GL stage, formatters, focus timeline, scroll lock

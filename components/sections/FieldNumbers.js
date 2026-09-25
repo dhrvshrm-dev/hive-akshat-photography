@@ -26,7 +26,7 @@ export default function FieldNumbers() {
     <section className="relative bg-paper py-24 text-ink md:py-32">
       <Container>
         <p className="mb-14 flex items-center gap-3 font-mono text-[10px] uppercase tracking-hud text-ink/50">
-          <span className="text-saffron">04</span>
+          <span className="text-saffron">06</span>
           <span className="h-px w-8 bg-ink/25" />
           Field log
         </p>

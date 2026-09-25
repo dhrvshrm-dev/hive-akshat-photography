@@ -5,6 +5,8 @@ const nextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
     formats: ["image/webp"],
+    // YouTube thumbnails for the films section, once real video IDs are added.
+    remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com" }],
   },
   async redirects() {
     // The portfolio used to live at /work.

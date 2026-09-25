@@ -23,6 +23,7 @@ export const site = {
     { label: "Home", href: "/" },
     { label: "Journeys", href: "/journeys" },
     { label: "Archive", href: "/journeys#archive" },
+    { label: "Films", href: "/#films" },
     { label: "Services", href: "/services" },
     { label: "About", href: "/about" },
     { label: "Kind words", href: "/testimonials" },

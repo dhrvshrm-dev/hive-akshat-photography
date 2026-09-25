@@ -40,7 +40,7 @@ export default function TestimonialsPreview() {
       <Container>
         <div className="flex items-center justify-between">
           <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-hud text-bone/50">
-            <span className="text-saffron">05</span>
+            <span className="text-saffron">07</span>
             <span className="h-px w-8 bg-bone/25" />
             Word from the road
           </p>

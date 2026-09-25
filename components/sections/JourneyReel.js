@@ -102,7 +102,7 @@ export default function JourneyReel() {
             {/* Intro panel */}
             <div className="flex h-[62svh] w-[78vw] shrink-0 flex-col justify-between sm:w-[44vw] lg:w-[30vw]">
               <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-hud text-bone/50">
-                <span className="text-saffron">02</span>
+                <span className="text-saffron">03</span>
                 <span className="h-px w-8 bg-bone/25" />
                 Journeys
               </p>
