@@ -44,7 +44,7 @@ export default function SplitText({
       {words.map(({ word, emphasis, key }) => (
         <span key={key} aria-hidden="true" className="inline-block overflow-hidden align-bottom">
           <motion.span
-            className={`inline-block ${emphasis ? "italic text-gold" : ""}`}
+            className={`inline-block ${emphasis ? "italic text-ember" : ""}`}
             variants={{
               hidden: { y: "110%", opacity: 0 },
               show: { y: "0%", opacity: 1, transition: { duration: 0.8, ease } },

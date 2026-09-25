@@ -1,8 +1,33 @@
+// PLACEHOLDER quotes — swap for real ones from clients before launch.
 export const testimonials = [
-  { name: "Aarav & Diya",   event: "Wedding, Ajmer",        quote: "Akshat felt like a friend with a camera. The photos brought back every emotion of the day." },
-  { name: "The Sharma Family", event: "Sangeet & Reception", quote: "Every relative is still talking about the pictures. He caught moments we didn't even know happened." },
-  { name: "Ishaan & Meera", event: "Pre-Wedding, Udaipur",  quote: "We're not comfortable in front of a camera, but he made it feel easy. The results are stunning." },
-  { name: "Rhea & Kabir",   event: "Wedding, Pushkar",      quote: "Beautiful work, calm presence, and delivered exactly when promised. Worth every rupee." },
-  { name: "Naina T.",       event: "Haldi & Mehndi",        quote: "Warm, professional and genuinely talented. Our families adored working with him." },
-  { name: "Vivaan & Sara",  event: "Wedding, Jaipur",       quote: "The highlight film gives me goosebumps every time. Can't recommend Hive Akshat enough." },
+  {
+    name: "Brand manager",
+    org: "Heritage hotel group, Rajasthan",
+    quote: "We asked for photographs of rooms. He came back with photographs of mornings. Our direct bookings have never looked better.",
+  },
+  {
+    name: "Campaign lead",
+    org: "State tourism campaign",
+    quote: "He knew which ghat would catch the first light and which boatman would let us shoot. Local knowledge you simply can't brief.",
+  },
+  {
+    name: "Ananya R.",
+    org: "Expedition guest, Zanskar",
+    quote: "Ten days in Zanskar with Akshat taught me more about light than five years of tutorials. And the patience — my god, the patience.",
+  },
+  {
+    name: "Editor",
+    org: "Travel magazine, Delhi",
+    quote: "Fast, respectful on sacred ground, and the edit arrives already telling a story. The easiest commission we make all year.",
+  },
+  {
+    name: "Rohit & Kavya",
+    org: "Print collectors, Bengaluru",
+    quote: "The Gurudongmar print is the first thing everyone asks about. It looks like a window, not a picture.",
+  },
+  {
+    name: "Trust secretary",
+    org: "Temple trust, Pushkar",
+    quote: "He asked before every frame and gave us an archive our trust will use for decades.",
+  },
 ];

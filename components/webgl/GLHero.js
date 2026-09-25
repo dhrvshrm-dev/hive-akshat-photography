@@ -1,23 +1,28 @@
 "use client";
-// The hero photograph, dissolved rather than cut.
+// The hero photograph, changed the way a lens changes subject: a rack focus.
 //
-// Two textures are resident at once and a noise field decides, per pixel, which
-// of the two it is showing yet — so the change sweeps across the frame in
-// organic patches instead of a flat cross-fade. The same noise displaces the uv
-// of both images while the sweep is in flight, which is what stops the dissolve
-// reading as a slideshow.
+// The outgoing frame drifts out of focus into bokeh, the incoming one is swapped
+// in under full blur, and the focus then pulls in, overshoots, hunts back and
+// locks — the same beat as the HUD's AF box, because both read one timeline
+// (lib/focusTimeline). The blur is a golden-angle disc of taps on a mip-biased
+// texture read, with highlights weighted up so bright points bloom into discs
+// the way real out-of-focus highlights do.
 //
-// At rest the shader is a passthrough: no distortion, no tint, the photograph is
-// exactly the photograph. Everything the visitor is here to look at stays sharp.
+// Nothing here owns the clock. The hero writes { from, to, changedAt } into a
+// shared ref and the shader just reads it each frame, so the DOM readouts and
+// the picture stay in lockstep whatever the frame rate.
+//
+// At rest (blur 0) the shader is a single texture read: the photograph is the
+// photograph.
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { registerItem } from "@/lib/gl/stage";
 import { aspectOf, coverScale, loadTexture } from "@/lib/gl/textures";
-import { COVER_UV, SIMPLEX_2D } from "@/lib/gl/glsl";
+import { COVER_UV } from "@/lib/gl/glsl";
+import { blurAt, mixAt } from "@/lib/focusTimeline";
 
-const HOLD = 5.2; // seconds a photograph is held before the next sweep starts
-const SWEEP = 1.8; // seconds the dissolve itself takes
-const OVERSCAN = 2; // the stage snaps boxes to whole pixels, so none is needed
+const OVERSCAN = 2;
+const TAPS = 20;
 
 const VERTEX = /* glsl */ `
 varying vec2 vUv;
@@ -32,48 +37,60 @@ uniform sampler2D uFrom;
 uniform sampler2D uTo;
 uniform vec2 uCoverFrom;
 uniform vec2 uCoverTo;
-uniform float uProgress;
-uniform float uTime;
-uniform vec2 uPointer;
-uniform float uHover;
+uniform float uMix;
+uniform float uBlur;
 uniform float uAspect;
+uniform float uZoom;
+uniform vec2 uShift;
 
 varying vec2 vUv;
 
-${SIMPLEX_2D}
 ${COVER_UV}
 
+vec3 bokeh(sampler2D tex, vec2 uv, vec2 cover, float amount) {
+    // Written with a single exit: ANGLE (Chrome on Windows) warns about an early
+    // return from a function that also contains a loop.
+    vec3 result = texture2D(tex, coverUv(uv, cover)).rgb;
+    if (amount >= 0.002) {
+        float radius = amount * 0.032;
+        float bias = amount * 2.5;
+        vec3 acc = vec3(0.0);
+        float wsum = 0.0;
+        for (int i = 0; i < ${TAPS}; i++) {
+            float fi = float(i);
+            float r = sqrt((fi + 0.5) / ${TAPS}.0) * radius;
+            float a = fi * 2.399963;
+            vec2 o = vec2(cos(a) / uAspect, sin(a)) * r;
+            vec3 c = texture2D(tex, coverUv(uv + o, cover), bias).rgb;
+            // Bright taps count for more: highlights swell into discs.
+            float w = 1.0 + pow(dot(c, vec3(0.333)), 3.0) * 6.0 * amount;
+            acc += c * w;
+            wsum += w;
+        }
+        result = acc / wsum;
+    }
+    return result;
+}
+
 void main() {
-    // Two octaves: the large one decides the shape of the sweep, the small one
-    // breaks up its edge so the boundary never looks like a gradient.
-    float n = snoise(vUv * 2.6) * 0.5 + snoise(vUv * 7.0) * 0.18;
-    n = n * 0.5 + 0.5;
+    // Focus breathing: a real lens's framing shifts slightly as it focuses.
+    vec2 uv = (vUv - 0.5) / (uZoom * (1.0 + uBlur * 0.025)) + 0.5 + uShift;
 
-    // A ring travelling out from the cursor, dying off with distance. Aspect
-    // correction keeps it a circle on a wide hero.
-    vec2 aspect = vec2(uAspect, 1.0);
-    float d = distance(vUv * aspect, uPointer * aspect);
-    float ring = sin(d * 26.0 - uTime * 2.4) * exp(-d * 6.0) * 0.010 * uHover;
-    vec2 dir = normalize(vUv - uPointer + vec2(1e-5));
-    vec2 uv = vUv + dir * ring;
-
-    // The sweep is a threshold on the noise rather than a mix factor, so each
-    // pixel flips at its own moment; the soft edge is the only blending.
-    float mask = smoothstep(n - 0.28, n + 0.28, uProgress);
-
-    // Displacement peaks mid-sweep and is gone at both ends — this is the whole
-    // reason the transition reads as liquid rather than as a fade.
-    float push = sin(uProgress * 3.141592653589793) * 0.06;
-    vec2 off = vec2(n - 0.5) * push;
-
-    vec3 from = texture2D(uFrom, coverUv(uv + off * mask, uCoverFrom)).rgb;
-    vec3 to = texture2D(uTo, coverUv(uv - off * (1.0 - mask), uCoverTo)).rgb;
-
-    gl_FragColor = vec4(mix(from, to, mask), 1.0);
+    vec3 col;
+    if (uMix <= 0.001) {
+        col = bokeh(uFrom, uv, uCoverFrom, uBlur);
+    } else if (uMix >= 0.999) {
+        col = bokeh(uTo, uv, uCoverTo, uBlur);
+    } else {
+        col = mix(bokeh(uFrom, uv, uCoverFrom, uBlur), bokeh(uTo, uv, uCoverTo, uBlur), uMix);
+    }
+    // A defocused frame loses a touch of contrast, which sells the blur.
+    col = mix(col, vec3(dot(col, vec3(0.333))), uBlur * 0.12);
+    gl_FragColor = vec4(col, 1.0);
 }
 `;
 
-function createHero(images, env) {
+function createHero(images, controller, env, onFirstFrame) {
   const geometry = new THREE.PlaneGeometry(1, 1);
   const material = new THREE.ShaderMaterial({
     vertexShader: VERTEX,
@@ -83,138 +100,81 @@ function createHero(images, env) {
       uTo: { value: null },
       uCoverFrom: { value: new THREE.Vector2(1, 1) },
       uCoverTo: { value: new THREE.Vector2(1, 1) },
-      uProgress: { value: 0 },
-      uTime: { value: 0 },
-      uPointer: { value: new THREE.Vector2(0.5, 0.5) },
-      uHover: { value: 0 },
+      uMix: { value: 1 },
+      uBlur: { value: 1 },
       uAspect: { value: 1 },
+      uZoom: { value: 1 },
+      uShift: { value: new THREE.Vector2(0, 0) },
     },
   });
-
   const mesh = new THREE.Mesh(geometry, material);
+  mesh.visible = false; // until there are pixels to show
   const group = new THREE.Group();
   group.add(mesh);
 
-  const state = {
-    textures: images.map(() => null),
-    from: 0,
-    to: 0,
-    elapsed: 0,
-    sweeping: false,
-    width: env.width,
-    height: env.height,
-    hover: 0,
-    ready: false,
+  const textures = images.map(() => null);
+  let width = env.width;
+  let height = env.height;
+  const shift = new THREE.Vector2(0, 0);
+  let announced = false;
+
+  const cover = (tex, out) => {
+    if (!tex) return;
+    const c = coverScale(aspectOf(tex), width / Math.max(1, height));
+    out.set(c.x, c.y);
   };
 
   const applySize = (w, h) => {
-    state.width = w;
-    state.height = h;
-    // Overscanned by a pixel on every side. The stage clips to the hero's exact
-    // box with a scissor rectangle, so the plane's own antialiased edge — which
-    // would otherwise blend with the transparent clear colour and draw a seam
-    // along the join with the next section — is pushed outside the cut.
+    width = w;
+    height = h;
     mesh.scale.set(w + OVERSCAN, h + OVERSCAN, 1);
     material.uniforms.uAspect.value = w / Math.max(1, h);
-    refreshCover();
   };
-
-  function refreshCover() {
-    const box = state.width / Math.max(1, state.height);
-    const from = state.textures[state.from];
-    const to = state.textures[state.to];
-    if (from) {
-      const c = coverScale(aspectOf(from), box);
-      material.uniforms.uCoverFrom.value.set(c.x, c.y);
-    }
-    if (to) {
-      const c = coverScale(aspectOf(to), box);
-      material.uniforms.uCoverTo.value.set(c.x, c.y);
-    }
-  }
+  applySize(env.width, env.height);
 
   images.forEach((src, i) => {
     loadTexture(src).then((tex) => {
-      if (!tex) return;
-      state.textures[i] = tex;
-      // The first photograph to arrive occupies both slots, so the hero is never
-      // showing a black plane while the rest of the set is still downloading.
-      if (!state.ready) {
-        state.ready = true;
-        state.from = i;
-        state.to = i;
-        material.uniforms.uFrom.value = tex;
-        material.uniforms.uTo.value = tex;
-      }
-      refreshCover();
+      if (tex) textures[i] = tex;
     });
   });
-
-  applySize(env.width, env.height);
-
-  /** The next slot that actually has pixels, or null while only one does. */
-  function nextLoaded(after) {
-    const n = state.textures.length;
-    for (let step = 1; step <= n; step++) {
-      const i = (after + step) % n;
-      if (state.textures[i] && i !== after) return i;
-    }
-    return null;
-  }
 
   return {
     group,
     resize: applySize,
     update(e) {
       const u = material.uniforms;
-      u.uTime.value = e.time;
-
-      // Pointer in 0..1 across the hero, y flipped back into uv space.
-      const px = e.pointerX / Math.max(1, state.width) + 0.5;
-      const py = e.pointerY / Math.max(1, state.height) + 0.5;
-      if (e.pointerInside) {
-        u.uPointer.value.set(px, py);
+      const c = controller.current;
+      const fromTex = textures[c.from] || textures[c.to];
+      const toTex = textures[c.to] || fromTex;
+      if (!toTex) return;
+      mesh.visible = true;
+      if (!announced) {
+        // The markup underneath only fades once there is a real frame to
+        // replace it with, never onto an empty plane.
+        announced = true;
+        onFirstFrame();
       }
-      const targetHover = e.pointerInside ? 1 : 0;
-      state.hover += (targetHover - state.hover) * (1 - Math.exp(-e.dt * 4));
-      u.uHover.value = state.hover;
+      u.uFrom.value = fromTex;
+      u.uTo.value = toTex;
+      cover(fromTex, u.uCoverFrom.value);
+      cover(toTex, u.uCoverTo.value);
 
-      if (!state.ready) return;
-      state.elapsed += e.dt;
+      const d = c.changedAt == null ? null : (performance.now() - c.changedAt) / 1000;
+      // An incoming frame that has not decoded yet is held behind full blur
+      // rather than cut to — the hunt simply waits for it.
+      const ready = Boolean(textures[c.to]);
+      u.uBlur.value = ready ? blurAt(d) : 1;
+      u.uMix.value = ready ? mixAt(d) : 0;
 
-      if (!state.sweeping) {
-        if (state.elapsed >= HOLD) {
-          const next = nextLoaded(state.to);
-          if (next === null) {
-            state.elapsed = 0; // nothing else has loaded yet; wait and retry
-            return;
-          }
-          state.from = state.to;
-          state.to = next;
-          u.uFrom.value = state.textures[state.from];
-          u.uTo.value = state.textures[state.to];
-          refreshCover();
-          state.sweeping = true;
-          state.elapsed = 0;
-          u.uProgress.value = 0;
-        }
-        return;
-      }
-
-      const t = Math.min(1, state.elapsed / SWEEP);
-      // Smootherstep: the sweep leaves and arrives at a dead stop, so neither
-      // end of the dissolve has a visible seam.
-      u.uProgress.value = t * t * t * (t * (t * 6 - 15) + 10);
-      if (t >= 1) {
-        state.sweeping = false;
-        state.elapsed = 0;
-        // The arrival becomes the new resting frame, so uProgress is free to
-        // start from 0 again on the next sweep.
-        state.from = state.to;
-        u.uFrom.value = state.textures[state.from];
-        u.uCoverFrom.value.copy(u.uCoverTo.value);
-        u.uProgress.value = 0;
-      }
+      // A slow push-in across the hold, and a few pixels of drift toward the
+      // pointer, so a still frame is never quite static.
+      const hold = d == null ? 0 : Math.max(0, d - 1.6);
+      u.uZoom.value = 1.02 + Math.min(hold, 8) * 0.004;
+      const tx = e.pointerInside ? (e.pointerX / Math.max(1, width)) * -0.01 : 0;
+      const ty = e.pointerInside ? (e.pointerY / Math.max(1, height)) * -0.01 : 0;
+      shift.x += (tx - shift.x) * (1 - Math.exp(-e.dt * 3));
+      shift.y += (ty - shift.y) * (1 - Math.exp(-e.dt * 3));
+      u.uShift.value.copy(shift);
     },
     dispose() {
       geometry.dispose();
@@ -224,12 +184,12 @@ function createHero(images, env) {
 }
 
 /**
- * Wraps the hero's own markup. `fallback` is the ordinary <Image> that carries
- * the LCP and serves anyone without WebGL; it is faded out — not unmounted —
- * the moment the shader has a frame to show, so the photograph never blinks and
- * the alt text stays in the document.
+ * `controller` is a ref holding { from, to, changedAt } (changedAt from
+ * performance.now(), or null to hold the first frame out of focus).
+ * `fallback` is ordinary markup for no-WebGL visitors; it fades out once the
+ * shader has a frame.
  */
-export default function GLHero({ images, fallback, className = "", style }) {
+export default function GLHero({ images, controller, fallback, className = "", style }) {
   const boxRef = useRef(null);
   const [live, setLive] = useState(false);
 
@@ -240,25 +200,19 @@ export default function GLHero({ images, fallback, className = "", style }) {
     if (!srcs.length) return;
     const unregister = registerItem(
       el,
-      (env) => createHero(srcs, env),
-      () => setLive(true),
+      (env) => createHero(srcs, controller, env, () => setLive(true))
     );
     return () => {
       setLive(false);
       unregister();
     };
-  }, [images]);
+  }, [images, controller]);
 
   return (
     <div ref={boxRef} className={className} style={style}>
       <div
         aria-hidden={live ? "true" : undefined}
-        style={{
-          position: "absolute",
-          inset: 0,
-          opacity: live ? 0 : 1,
-          transition: "opacity 600ms linear",
-        }}
+        style={{ position: "absolute", inset: 0, opacity: live ? 0 : 1, transition: "opacity 600ms linear" }}
       >
         {fallback}
       </div>

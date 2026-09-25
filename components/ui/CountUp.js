@@ -22,7 +22,7 @@ export default function CountUp({ to, suffix = "", className = "" }) {
 
   return (
     <span ref={ref} className={className}>
-      {value}
+      {value.toLocaleString("en-IN")}
       {suffix}
     </span>
   );

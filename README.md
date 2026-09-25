@@ -1,106 +1,86 @@
-# Hive Akshat — Photography Website
+# Hive Akshat — Travel, Heritage & Spiritual Photography
 
-A wedding & event photography website for **Hive Akshat**, Ajmer.
-Built with **Next.js (App Router)**, **Tailwind CSS**, and **Framer Motion**.
+Portfolio site for **Hive Akshat**, a photographer based in Ajmer, Rajasthan —
+temples, landscapes, architecture, people and wildlife across India.
+Built with **Next.js (App Router)**, **Tailwind CSS**, **Framer Motion**, **three.js** and **Lenis**.
+
+The whole site is designed as if you are looking through a camera:
+
+| Where | What happens |
+| --- | --- |
+| First visit to `/` | **Diya intro** — the page is dark, the cursor (or finger) is a lamp that reveals the Varanasi aarti. Press & hold to light it. Add `?intro=1` to any home URL to force it. |
+| Home hero | **Viewfinder** — WebGL rack-focus between photos, an AF box that hunts and locks on the subject, real EXIF + GPS readouts. |
+| Cursor (desktop) | An **AF point** that locks onto links and buttons. |
+| Touch (phones) | **Tap-to-focus** — a focus box appears and locks wherever you tap. |
+| Page changes | A **camera aperture** closes and opens between routes. |
+| `/journeys` | Self-drawing **map of India** with the route, chapters with a sticky refocusing viewfinder, and the filterable archive with a review-screen lightbox (EXIF + live histogram). |
 
 ---
 
 ## Run it locally
 
-You need [Node.js](https://nodejs.org) 18.17+ installed.
+Node.js 22 (see `.nvmrc`).
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open **http://localhost:3000**.
+Open **http://localhost:3000** (and **http://localhost:3000/?intro=1** to see the intro again).
 
-To build for production:
+Production build: `npm run build && npm start`.
 
-```bash
-npm run build
-npm start
+---
+
+## Where things live
+
+```
+app/                      Pages (App Router) + /api/contact
+components/
+  intro/DiyaIntro.js      The lamp intro
+  layout/                 Navbar, Footer, SmoothScroll (Lenis), ShutterTransition, WhatsApp
+  sections/               Home + page building blocks (Hero, JourneyReel, Disciplines, …)
+  journeys/               Map + chapter components for /journeys
+  gallery/                Archive grid + lightbox
+  webgl/                  Everything drawn on the one shared WebGL canvas
+  ui/                     Cursor, TouchFocus, Readout, FocusImage, Button, …
+data/                     ← EDIT CONTENT HERE
+  photos.js               Every photo: file, title, place, GPS, altitude, EXIF, focus point, credit
+  journeys.js             The journeys (map pins + chapters), in route order
+  services.js             Services, process, photo-walk departures
+  testimonials.js         Quotes
+  site.js                 Contact details, nav, manifesto text
+  indiaMap.js             India outline (Government of India boundary) + projection
+lib/                      Motion tokens, GL stage, formatters, focus timeline, scroll lock
+public/images/photos/     The photographs
 ```
 
 ---
 
-## Folder structure
+## Replacing the placeholder photos
 
-```
-hive-akshat/
-├── app/                     # Pages + API (Next.js App Router)
-│   ├── page.js              # Home
-│   ├── about/page.js
-│   ├── work/page.js         # Portfolio: showreel + filterable gallery
-│   ├── services/page.js
-│   ├── testimonials/page.js
-│   ├── contact/page.js      # Contact form
-│   ├── api/contact/route.js # Handles form submissions (email/DB hooks inside)
-│   ├── layout.js            # Shared shell: navbar, footer, fonts
-│   └── globals.css
-│
-├── components/
-│   ├── layout/              # Navbar, Footer, WhatsApp button
-│   ├── sections/            # Home + page building blocks (Hero, Process, etc.)
-│   ├── ui/                  # Small reusable pieces (Button, Container, Reveal...)
-│   ├── gallery/             # Filterable grid + full-screen lightbox
-│   └── forms/               # Contact form
-│
-├── data/                    # ← EDIT YOUR CONTENT HERE (no coding needed)
-│   ├── site.js              # Name, phone, email, WhatsApp, nav links
-│   ├── portfolio.js         # Gallery images + categories
-│   ├── services.js          # Services + the how-it-works steps
-│   ├── testimonials.js      # Client quotes
-│   └── clients.js           # "Trusted by" names
-│
-├── public/images/           # Put real photos here
-└── ...config files
-```
+The photos in `public/images/photos/` are **Creative Commons placeholders from
+Wikimedia Commons** (credited at `/credits`). To use Akshat's own:
 
-> **The idea:** almost everything you'll want to change lives in `/data`.
-> Update those files and the whole site updates — no need to touch the components.
+1. Drop the file into `public/images/photos/` (JPG, ~2200px on the long side, ~400 KB).
+2. In `data/photos.js`, point `src` at it and update `w`/`h`, `title`, `place`,
+   `lat`/`lon`, `alt`, `exif`, and `focus` (where the AF box should lock, as 0–1 fractions).
+3. Update or remove the `credit` once the photo is his.
+
+Copy marked **PLACEHOLDER** in `data/` (field notes, testimonials, stats, kit
+list, departure dates) is written to show the tone — confirm it with Akshat.
 
 ---
 
-## How to customise
+## Contact form
 
-**Text, contact details, links** → edit `data/site.js`.
-
-**Photos** → drop images into `public/images/`, then point to them in
-`data/portfolio.js` (e.g. `src: "/images/wedding-01.jpg"`). The starter uses
-sample photos from picsum.photos so it looks real immediately.
-
-**Showreel video** → open `components/sections/Showreel.js` and replace
-`VIDEO_ID` with your YouTube video ID.
-
-**Colours & fonts** → `tailwind.config.js` (colours) and `app/layout.js` (fonts).
-
----
-
-## Contact form: email + database
-
-Out of the box, the form **works locally** — submissions are validated and
-printed to your terminal, so you can test it right away.
-
-To make it actually email Akshat and/or save to a database:
-
-1. Copy `.env.example` to `.env.local` and fill in the values.
-2. Open `app/api/contact/route.js` — the two commented blocks show exactly
-   where to add **Resend** (email) and a **database** (Supabase/Neon).
-3. Install whichever you use, e.g. `npm install resend`.
-
-The form already includes a hidden honeypot field to block spam bots.
+Works locally out of the box (submissions are logged in the terminal). To email
+and/or store enquiries, copy `.env.example` to `.env.local` and fill in the
+commented Resend / database blocks in `app/api/contact/route.js`.
 
 ---
 
 ## Deploy
 
-Easiest path is **Vercel**:
-
-1. Push this folder to a GitHub repo.
-2. Import it at [vercel.com](https://vercel.com).
-3. Add your `.env` values in the Vercel dashboard.
-4. Connect the custom domain (e.g. hiveakshat.com).
-
-Done.
+Push to GitHub, import on [Vercel](https://vercel.com), add the `.env` values,
+connect the domain.

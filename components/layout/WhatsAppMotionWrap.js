@@ -5,14 +5,14 @@ import { motion, useReducedMotion } from "framer-motion";
 export default function WhatsAppMotionWrap({ children }) {
   const reduce = useReducedMotion();
 
-  if (reduce) return <div className="fixed bottom-6 right-6 z-50">{children}</div>;
+  if (reduce) return <div className="fixed bottom-5 right-5 z-50 md:bottom-6 md:right-6">{children}</div>;
 
   return (
     <motion.div
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 1.2, type: "spring", stiffness: 260, damping: 18 }}
-      className="fixed bottom-6 right-6 z-50"
+      transition={{ delay: 2.2, type: "spring", stiffness: 260, damping: 18 }}
+      className="fixed bottom-5 right-5 z-50 md:bottom-6 md:right-6"
     >
       <motion.span
         className="absolute inset-0 rounded-full bg-[#25D366]"

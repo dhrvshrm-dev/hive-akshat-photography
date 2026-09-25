@@ -215,7 +215,7 @@ export default function GLScrollStrip({
     <div
       ref={boxRef}
       role="img"
-      aria-label="A drifting band of photographs from recent weddings"
+      aria-label="A drifting roll of photographs from the road"
       className={className}
       style={{ position: "relative", ...style }}
     />
