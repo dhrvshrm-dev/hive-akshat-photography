@@ -4,6 +4,7 @@ import Reveal from "@/components/ui/Reveal";
 import FocusImage from "@/components/ui/FocusImage";
 import CountUp from "@/components/ui/CountUp";
 import CTA from "@/components/sections/CTA";
+import Recognition from "@/components/sections/Recognition";
 import { FilmStrip } from "@/components/sections/ContactSheet";
 import { photo } from "@/data/photos";
 import { site } from "@/data/site";
@@ -122,6 +123,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
+      <Recognition />
       <FilmStrip label="Roll 12 · The North" ids={["phuktal", "thiksey", "kee-monastery", "spiti-river", "ladakh-mustard", "sangla-snow", "gurudongmar", "zanskar-road"]} />
       <CTA title={[{ text: "Let’s go" }, { text: "somewhere.", emphasis: true }]} />
     </>

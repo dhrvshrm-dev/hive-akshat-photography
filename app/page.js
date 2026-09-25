@@ -2,6 +2,8 @@ import Hero from "@/components/sections/Hero";
 import PlacesMarquee from "@/components/sections/PlacesMarquee";
 import Manifesto from "@/components/sections/Manifesto";
 import JourneyReel from "@/components/sections/JourneyReel";
+import Recognition from "@/components/sections/Recognition";
+import Films from "@/components/sections/Films";
 import Disciplines from "@/components/sections/Disciplines";
 import FieldNumbers from "@/components/sections/FieldNumbers";
 import TestimonialsPreview from "@/components/sections/TestimonialsPreview";
@@ -14,7 +16,9 @@ export default function HomePage() {
       <Hero />
       <PlacesMarquee />
       <Manifesto />
+      <Recognition />
       <JourneyReel />
+      <Films />
       <Disciplines />
       {/* Full-bleed interlude: the whole archive as one field under the cursor.
           Drawn by the shared canvas, so it costs no second WebGL context. */}

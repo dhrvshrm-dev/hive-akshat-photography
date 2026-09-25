@@ -15,7 +15,7 @@
 //   duration  shown on the card, e.g. "3:42"
 export const films = [
   {
-    youtube: "M7BuIvLto1w", // DUMMY — someone else's video, replace with Akshat's
+    youtube: "BnHUVARgcw8", // DUMMY — someone else's video, replace with Akshat's
     usePoster: true,
     title: "Above the Thar",
     kind: "Drone",
@@ -25,7 +25,7 @@ export const films = [
     osd: { alt: 118, speed: 8.2, dist: 1.4 },
   },
   {
-    youtube: "SDIWBP9YwJc", // DUMMY — someone else's video, replace with Akshat's
+    youtube: "jaeq0Ep7q8s", // DUMMY — someone else's video, replace with Akshat's
     usePoster: true,
     title: "Tiger country",
     kind: "Wildlife",
@@ -45,7 +45,7 @@ export const films = [
     osd: { alt: 96, speed: 11.4, dist: 2.1 },
   },
   {
-    youtube: "rfPZ4hWbCEk", // DUMMY — someone else's video, replace with Akshat's
+    youtube: "KOXCeSr6Npc", // DUMMY — someone else's video, replace with Akshat's
     usePoster: true,
     title: "Ghats at first light",
     kind: "Drone",
@@ -55,7 +55,7 @@ export const films = [
     osd: { alt: 60, speed: 4.6, dist: 0.8 },
   },
   {
-    youtube: "Zv6tFZTgFPQ", // DUMMY — someone else's video, replace with Akshat's
+    youtube: "4uPAnSuYyb0", // DUMMY — someone else's video, replace with Akshat's
     usePoster: true,
     title: "Desert dwellers",
     kind: "Wildlife",
