@@ -6,7 +6,7 @@
 // with a preview of that journey's cover; click to go to its chapter.
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { AnimatePresence, motion, useAnimationControls, useInView } from "framer-motion";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { INDIA, project } from "@/data/indiaMap";
 import { abroadJourneys, indiaJourneys as journeys } from "@/data/journeys";
@@ -25,25 +25,33 @@ import { ease } from "@/lib/motion";
  * length is measured with getTotalLength() and the dash offset is animated in
  * the path's own units, which every browser agrees on.
  */
-function DrawPath({ delay = 0, duration = 2, reduce, ...props }) {
+function DrawPath({ delay = 0, duration = 2, reduce, inView, ...props }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-10%" });
+  const controls = useAnimationControls();
   const [len, setLen] = useState(null);
+
+  // Measure once mounted, and park the line fully undrawn.
   useEffect(() => {
-    if (ref.current) setLen(Math.ceil(ref.current.getTotalLength()) + 2);
-  }, [props.d]);
-  if (reduce || len == null) {
-    // Until measured (first paint) it is invisible, so nothing flashes in whole.
-    return <path ref={ref} {...props} style={{ opacity: reduce ? 1 : 0 }} />;
-  }
+    if (!ref.current || reduce) return;
+    const l = Math.ceil(ref.current.getTotalLength()) + 2;
+    controls.set({ strokeDashoffset: l, opacity: 1 });
+    setLen(l);
+  }, [props.d, reduce, controls]);
+
+  // Then draw it when the map comes into view.
+  useEffect(() => {
+    if (len == null || !inView) return;
+    controls.start({ strokeDashoffset: 0, transition: { delay, duration, ease: "easeInOut" } });
+  }, [len, inView, delay, duration, controls]);
+
   return (
     <motion.path
       ref={ref}
       {...props}
-      strokeDasharray={`${len} ${len}`}
-      initial={{ strokeDashoffset: len }}
-      animate={inView ? { strokeDashoffset: 0 } : { strokeDashoffset: len }}
-      transition={{ delay, duration, ease: "easeInOut" }}
+      strokeDasharray={len != null ? `${len} ${len}` : undefined}
+      // Hidden until measured, so it never flashes in whole before drawing.
+      initial={{ opacity: reduce ? 1 : 0 }}
+      animate={controls}
     />
   );
 }
@@ -69,6 +77,8 @@ const PAD = 40;
 export default function JourneysMap() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(null);
+  const svgRef = useRef(null);
+  const mapInView = useInView(svgRef, { once: true, amount: 0.25 });
 
   const pins = useMemo(
     () => journeys.map((j) => ({ ...j, xy: project(j.lat, j.lon) })),
@@ -149,6 +159,7 @@ export default function JourneysMap() {
       {/* The map */}
       <div className="relative order-1 mx-auto w-full max-w-[640px] lg:order-2">
         <svg
+          ref={svgRef}
           viewBox={`${-PAD} ${-PAD} ${INDIA.width + PAD * 2} ${INDIA.height + PAD * 2}`}
           className="h-auto w-full overflow-visible"
           role="img"
@@ -162,6 +173,7 @@ export default function JourneysMap() {
             strokeWidth="2.2"
             strokeLinejoin="round"
             reduce={reduce}
+            inView={mapInView}
             delay={0}
             duration={2.6}
           />
@@ -208,6 +220,7 @@ export default function JourneysMap() {
             strokeWidth="2.6"
             strokeLinecap="round"
             reduce={reduce}
+            inView={mapInView}
             delay={1.6}
             duration={3.2}
           />
