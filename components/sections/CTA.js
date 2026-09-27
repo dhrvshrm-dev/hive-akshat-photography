@@ -10,37 +10,68 @@ import SplitText from "@/components/ui/SplitText";
 import { photo } from "@/data/photos";
 import { site } from "@/data/site";
 
-const pano = photo("manali");
+const pano = photo("ana-sagar-sunset-aerial");
 
 export default function CTA({ title, subtitle }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-22%"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1.15, 1]);
 
   return (
-    <section ref={ref} className="relative flex min-h-[90svh] items-center overflow-hidden bg-night">
-      <motion.div className="absolute inset-y-0 left-0 w-[160%] md:w-[135%]" style={reduce ? {} : { x, scale }}>
-        <Image src={pano.src} alt={`${pano.title}`} fill sizes="160vw" className="object-cover" />
+    <section
+      ref={ref}
+      className="relative flex min-h-[90svh] items-center overflow-hidden bg-night"
+    >
+      <motion.div
+        className="absolute inset-y-0 left-0 w-[160%] md:w-[135%]"
+        style={reduce ? {} : { x, scale }}
+      >
+        <Image
+          src={pano.src}
+          alt={`${pano.title}`}
+          fill
+          sizes="160vw"
+          className="object-cover"
+        />
       </motion.div>
       <div className="absolute inset-0 bg-night/55" />
       <div className="absolute inset-0 bg-gradient-to-b from-night via-transparent to-night" />
-      <div className="brackets absolute inset-5 md:inset-10" style={{ "--c": "rgba(237,230,218,0.35)" }} />
+      <div
+        className="brackets absolute inset-5 md:inset-10"
+        style={{ "--c": "rgba(237,230,218,0.35)" }}
+      />
 
       <div className="relative z-[2] mx-auto w-full max-w-content px-6 text-center md:px-8">
         <p className="mb-6 font-mono text-[10px] uppercase tracking-hud text-bone/60">
           <span className="text-saffron">●</span> Next frame
         </p>
-        <SplitText as="h2" whileInView className="mx-auto block max-w-4xl font-display text-fluid-xl text-bone">
-          {title || [{ text: "Where should we" }, { text: "go next?", emphasis: true }]}
+        <SplitText
+          as="h2"
+          whileInView
+          className="mx-auto block max-w-4xl font-display text-fluid-xl text-bone"
+        >
+          {title || [
+            { text: "Where should we" },
+            { text: "go next?", emphasis: true },
+          ]}
         </SplitText>
         <p className="mx-auto mt-6 max-w-lg text-bone/70">
-          {subtitle || "Tourism collaborations, talks and workshops, or a conversation about a photograph — write to me."}
+          {subtitle ||
+            "Tourism collaborations, talks and workshops, or a conversation about a photograph — write to me."}
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <Button href="/contact">Get in touch</Button>
-          <Button href={`https://wa.me/${site.whatsapp}`} variant="outline" target="_blank" rel="noopener noreferrer">
+          <Button
+            href={`https://wa.me/${site.whatsapp}`}
+            variant="outline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             WhatsApp
           </Button>
         </div>

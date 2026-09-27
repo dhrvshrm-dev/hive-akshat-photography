@@ -44,7 +44,7 @@ export const metadata = {
     description:
       "Photographer · Filmmaker · Visual Storyteller. Rajasthan is his inspiration; India is his canvas.",
     type: "website",
-    images: ["/images/photos/pushkar-ghats.jpg"],
+    images: ["/images/photos/ana-sagar-sunset-aerial.jpg"],
   },
 };
 

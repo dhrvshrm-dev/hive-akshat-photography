@@ -79,13 +79,13 @@ export const socialLinks = site.social.filter((s) => s.href);
 // into the sentence.
 export const manifesto = [
   { text: "Photography is my language." },
-  { image: "varanasi-puja" },
+  { image: "pond-heron" },
   { text: "Storytelling is my craft." },
   { text: "Rajasthan" },
-  { image: "mehrangarh" },
+  { image: "pushkar-fair-portrait" },
   { text: "is my inspiration." },
   { text: "India" },
-  { image: "rann-white" },
+  { image: "ana-sagar-sunset-aerial" },
   { text: "is my canvas.", emphasis: true },
 ];
 

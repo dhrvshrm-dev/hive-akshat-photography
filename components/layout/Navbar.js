@@ -13,10 +13,10 @@ import { lockScroll, unlockScroll } from "@/lib/scroll";
 
 // One frame per menu link, revealed behind the full-screen menu on hover.
 const MENU_FRAMES = {
-  "/journeys": "rann-white",
-  "/work": "flamingos",
-  "/about": "mehrangarh",
-  "/contact": "pushkar-ghats",
+  "/journeys": "ana-sagar-sunset-aerial",
+  "/work": "pelican-catch",
+  "/about": "akshat-sunset",
+  "/contact": "pushkar-fair-camel",
 };
 
 /** Live IST clock plus the next sunrise or sunset at base — a camera's info line. */
@@ -29,8 +29,13 @@ function BaseClock() {
   }, []);
   if (!now) return <span className="opacity-0">00:00:00</span>;
   const { rise, set } = sunTimes(site.base.lat, site.base.lon, now);
-  const istMin = ((now.getUTCHours() * 60 + now.getUTCMinutes() + 330) % 1440);
-  const next = istMin < rise ? `Sunrise ${fmtMinutes(rise)}` : istMin < set ? `Sunset ${fmtMinutes(set)}` : `Sunrise ${fmtMinutes(rise)}`;
+  const istMin = (now.getUTCHours() * 60 + now.getUTCMinutes() + 330) % 1440;
+  const next =
+    istMin < rise
+      ? `Sunrise ${fmtMinutes(rise)}`
+      : istMin < set
+        ? `Sunset ${fmtMinutes(set)}`
+        : `Sunrise ${fmtMinutes(rise)}`;
   return (
     <span className="flex items-center gap-3">
       <span className="flex items-center gap-1.5">
@@ -77,7 +82,8 @@ export default function Navbar() {
     };
   }, [open]);
 
-  const isActive = (href) => pathname === href || (href !== "/" && pathname.startsWith(href));
+  const isActive = (href) =>
+    pathname === href || (href !== "/" && pathname.startsWith(href));
 
   return (
     <>
@@ -88,11 +94,16 @@ export default function Navbar() {
       >
         <div
           className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${solid ? "opacity-100" : "opacity-0"}`}
-          style={{ background: "linear-gradient(to bottom, rgba(10,9,8,0.92), rgba(10,9,8,0.6) 60%, rgba(10,9,8,0))" }}
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10,9,8,0.92), rgba(10,9,8,0.6) 60%, rgba(10,9,8,0))",
+          }}
         />
         <nav className="relative mx-auto flex max-w-[110rem] items-start justify-between px-5 py-5 md:px-8">
           <Link href="/" className="group relative z-10 block leading-none">
-            <span className="block font-display text-[1.6rem] tracking-tight text-bone">{site.name}</span>
+            <span className="block font-display text-[1.6rem] tracking-tight text-bone">
+              {site.name}
+            </span>
             <span className="mt-1 block font-mono text-[9px] uppercase tracking-hud text-bone/45 transition-colors group-hover:text-saffron">
               {fmtCoords(site.base.lat, site.base.lon)}
             </span>
@@ -108,10 +119,14 @@ export default function Navbar() {
                 <Link
                   href={item.href}
                   className={`group flex items-baseline gap-1.5 font-mono text-[11px] uppercase tracking-hud transition-colors ${
-                    isActive(item.href) ? "text-saffron" : "text-bone/80 hover:text-bone"
+                    isActive(item.href)
+                      ? "text-saffron"
+                      : "text-bone/80 hover:text-bone"
                   }`}
                 >
-                  <span className="text-[9px] text-bone/35">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-[9px] text-bone/35">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   {item.label}
                 </Link>
               </li>
@@ -124,7 +139,9 @@ export default function Navbar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
           >
-            <span className={`h-1.5 w-1.5 rounded-full transition-colors ${open ? "bg-saffron" : "bg-bone"}`} />
+            <span
+              className={`h-1.5 w-1.5 rounded-full transition-colors ${open ? "bg-saffron" : "bg-bone"}`}
+            />
             {open ? "Close" : "Menu"}
           </button>
         </nav>
@@ -151,7 +168,13 @@ export default function Navbar() {
                   transition={{ duration: 0.6, ease }}
                   className="absolute inset-0"
                 >
-                  <Image src={photo(MENU_FRAMES[hover]).src} alt="" fill sizes="100vw" className="object-cover" />
+                  <Image
+                    src={photo(MENU_FRAMES[hover]).src}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -168,10 +191,14 @@ export default function Navbar() {
                     onPointerEnter={() => setHover(item.href)}
                     onFocus={() => setHover(item.href)}
                     className={`flex items-baseline gap-4 font-display text-5xl leading-tight ${
-                      isActive(item.href) && item.href !== "/" ? "text-saffron" : "text-bone"
+                      isActive(item.href) && item.href !== "/"
+                        ? "text-saffron"
+                        : "text-bone"
                     }`}
                   >
-                    <span className="font-mono text-xs text-bone/40">{String(i).padStart(2, "0")}</span>
+                    <span className="font-mono text-xs text-bone/40">
+                      {String(i).padStart(2, "0")}
+                    </span>
                     {item.label}
                   </Link>
                 </motion.li>

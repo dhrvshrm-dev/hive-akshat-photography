@@ -66,7 +66,7 @@ export const films = [
     title: "Ajmer Dargah, aerial",
     kind: "Drone",
     place: "Ajmer, Rajasthan",
-    poster: "ana-sagar",
+    poster: "ajmer-night-aerial",
     osd: { alt: 90, speed: 3.9, dist: 0.7 },
   },
   {

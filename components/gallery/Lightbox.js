@@ -189,7 +189,7 @@ export default function Lightbox({ items, index, onClose, onStep }) {
             </dl>
 
             <p className="mt-6 hidden normal-case tracking-normal text-bone/35 lg:block">
-              Photo: {item.credit?.author} · {item.credit?.license}
+              Photo: {item.credit?.author}{item.credit?.license ? ` · ${item.credit.license}` : ""}
             </p>
             <p className="mt-4 hidden text-bone/30 lg:block">← → to browse · Esc to close</p>
           </aside>

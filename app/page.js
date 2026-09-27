@@ -24,8 +24,8 @@ export default function HomePage() {
       <ContactSheet />
       <FieldNumbers />
       <FilmStrip
-        label="Roll 07 · Rajasthan"
-        ids={["pushkar-camels", "jaisalmer-window", "amber-fort", "bundi-lady", "thar-dunes", "jantar-mantar", "galta-ji", "rajasthan-shepherd", "ajmer-jhonpra-arch", "jaisalmer-fort", "macaque", "pushkar-ghats"]}
+        label="Roll 07 · Ajmer & Pushkar"
+        ids={["pushkar-fair-camel", "pushkar-fair-line", "pushkar-fair-red", "pushkar-fair-herders", "pushkar-fair-caravan", "pushkar-fair-portrait", "pelican-catch", "pond-heron", "chameleon", "baya-weaver", "painted-stork-pair", "knob-billed-duck"]}
       />
       <CTA />
     </>

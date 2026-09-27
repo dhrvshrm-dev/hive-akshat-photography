@@ -8,16 +8,18 @@
 //   2. The Rashtrapati Bhavan commission, given a feature of its own.
 //   3. Honours, as a roll of certificates that rule themselves in.
 //   4. Where the work has been published.
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import FocusImage from "@/components/ui/FocusImage";
-import { collaborations, collaborationsNote, commission, honours, press, recognitionHeadline } from "@/data/recognition";
+import { clippings, collaborations, collaborationsNote, commission, honours, press, recognitionHeadline } from "@/data/recognition";
 import { photo } from "@/data/photos";
 import { ease } from "@/lib/motion";
+import { lockScroll, unlockScroll } from "@/lib/scroll";
 
 // A few bars of a barcode, derived from the org name so it is stable.
 function Barcode({ seed }) {
@@ -147,8 +149,53 @@ function Commission() {
   );
 }
 
-/** Honours, each ruled in like a line on a certificate as it arrives. */
-function Honours() {
+/** A full-screen view of one photograph or clipping. Escape, tap or ✕ closes it. */
+function Viewer({ item, onClose }) {
+  useEffect(() => {
+    if (!item) return;
+    lockScroll("viewer");
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => {
+      unlockScroll("viewer");
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [item, onClose]);
+  return (
+    <AnimatePresence>
+      {item && (
+        <motion.div
+          className="fixed inset-0 z-[140] flex flex-col items-center justify-center gap-4 bg-night/95 p-4 backdrop-blur-sm md:p-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          role="dialog"
+          aria-label={item.caption}
+          data-lenis-prevent
+        >
+          <motion.div
+            className="relative h-[78vh] w-full max-w-5xl"
+            initial={{ scale: 0.96, filter: "blur(12px)" }}
+            animate={{ scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.5, ease }}
+          >
+            <Image src={item.src} alt={item.caption} fill sizes="100vw" className="object-contain" />
+          </motion.div>
+          <p className="flex w-full max-w-5xl items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-hud text-bone/70">
+            <span>{item.caption}</span>
+            <button onClick={onClose} className="text-bone hover:text-saffron">
+              Close ✕
+            </button>
+          </p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/** Honours, each ruled in like a line on a certificate, with a photo of the moment. */
+function Honours({ onOpen }) {
   const reduce = useReducedMotion();
   return (
     <div className="mt-24 md:mt-32">
@@ -162,20 +209,32 @@ function Honours() {
         {honours.map((h, i) => (
           <motion.li
             key={h.title}
-            className="relative grid gap-2 py-6 md:grid-cols-[3rem_1.2fr_1.4fr_8.5rem] md:items-baseline md:gap-6"
+            className="relative grid gap-4 py-7 md:grid-cols-[3rem_11rem_1fr_1.2fr_7.5rem] md:items-center md:gap-6"
             initial={reduce ? false : { opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease, delay: i * 0.06 }}
+            transition={{ duration: 0.7, ease, delay: i * 0.05 }}
           >
             <motion.span
               className="absolute inset-x-0 top-0 h-px origin-left bg-line"
               initial={reduce ? false : { scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 1.1, ease, delay: i * 0.06 }}
+              transition={{ duration: 1.1, ease, delay: i * 0.05 }}
             />
             <span className="font-mono text-[10px] text-saffron">{String(i + 1).padStart(2, "0")}</span>
+            {h.image ? (
+              <button
+                onClick={() => onOpen({ src: h.image, caption: `${h.title} — ${h.detail || h.by}` })}
+                data-cursor="View"
+                className="group relative block aspect-[4/3] w-full overflow-hidden bg-soot md:w-44"
+              >
+                <Image src={h.image} alt={h.title} fill sizes="(min-width:768px) 176px, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <span className="brackets pointer-events-none absolute inset-2 opacity-0 transition-opacity group-hover:opacity-100" style={{ "--c": "#F0782D", "--b": "10px" }} />
+              </button>
+            ) : (
+              <span className="hidden md:block" />
+            )}
             <span className="flex items-center gap-4 font-display text-2xl leading-tight text-bone">
               {h.logo && (
                 <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-full bg-paper">
@@ -192,25 +251,50 @@ function Honours() {
           </motion.li>
         ))}
       </ol>
-      <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3 border-t border-line pt-8">
-        <span className="font-mono text-[10px] uppercase tracking-hud text-bone/40">Featured in</span>
-        {press.map((p) =>
-          p.href ? (
-            <a
-              key={p.name}
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-sweep font-display text-2xl italic text-bone/80 transition-colors hover:text-saffron md:text-3xl"
+    </div>
+  );
+}
+
+/** His photographs as they ran in the papers. Swipe on a phone, a wall on desktop. */
+function PressWall({ onOpen }) {
+  return (
+    <div className="mt-24 md:mt-32">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <h3 className="font-display text-3xl text-bone md:text-4xl">
+          In <span className="italic text-ember">print</span>
+        </h3>
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <span className="font-mono text-[10px] uppercase tracking-hud text-bone/40">Featured in</span>
+          {press.map((p) =>
+            p.href ? (
+              <a key={p.name} href={p.href} target="_blank" rel="noopener noreferrer" className="link-sweep font-display text-xl italic text-bone/80 hover:text-saffron">
+                {p.name} ↗
+              </a>
+            ) : (
+              <span key={p.name} className="font-display text-xl italic text-bone/80">
+                {p.name}
+              </span>
+            )
+          )}
+        </div>
+      </div>
+      <p className="mt-4 max-w-xl text-bone/55">His photographs on the front pages and city pages of Rajasthan's newspapers.</p>
+      <div className="no-scrollbar -mx-6 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 md:mx-0 md:block md:columns-3 md:gap-4 md:overflow-visible md:px-0 lg:columns-4">
+        {clippings.map((c, i) => (
+          <Reveal key={c.src} delay={(i % 4) * 0.05} className="w-[70vw] shrink-0 snap-center sm:w-[42vw] md:mb-4 md:w-auto md:break-inside-avoid">
+            <button
+              onClick={() => onOpen({ src: c.src, caption: `${c.paper} — ${c.caption}` })}
+              data-cursor="Read"
+              className="group block w-full text-left"
             >
-              {p.name} ↗
-            </a>
-          ) : (
-            <span key={p.name} className="font-display text-2xl italic text-bone/80 md:text-3xl">
-              {p.name}
-            </span>
-          )
-        )}
+              <span className="relative block overflow-hidden bg-paper">
+                <Image src={c.src} alt={`${c.paper}: ${c.caption}`} width={900} height={700} sizes="(min-width:1024px) 25vw, (min-width:768px) 33vw, 70vw" className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]" />
+              </span>
+              <span className="mt-2 block font-mono text-[9px] uppercase tracking-hud text-bone/45">{c.paper}</span>
+              <span className="block text-sm text-bone/75">{c.caption}</span>
+            </button>
+          </Reveal>
+        ))}
       </div>
     </div>
   );
@@ -222,6 +306,8 @@ export default function Recognition({ index = "02" }) {
   const smooth = useSpring(vel, { stiffness: 80, damping: 12 });
   // Scroll speed -> swing, capped so a fling never flips a card over.
   const sway = useTransform(smooth, [-2500, 0, 2500], [7, 0, -7], { clamp: true });
+  const [open, setOpen] = useState(null);
+  const close = useCallback(() => setOpen(null), []);
 
   return (
     <section id="recognition" className="relative scroll-mt-20 overflow-hidden bg-night py-28 md:py-40">
@@ -244,8 +330,10 @@ export default function Recognition({ index = "02" }) {
           </p>
         </Reveal>
         <Commission />
-        <Honours />
+        <Honours onOpen={setOpen} />
+        <PressWall onOpen={setOpen} />
       </Container>
+      <Viewer item={open} onClose={close} />
     </section>
   );
 }

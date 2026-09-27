@@ -30,7 +30,7 @@ export const metadata = {
 };
 
 // FILL IN: a real portrait of Akshat (drop it in /public/images and add it to data/photos.js).
-const portrait = photo("ana-sagar");
+const portrait = photo("akshat-sunset");
 
 const stats = [
   { to: 20, suffix: "+ yrs", label: "Behind the lens" },
@@ -100,6 +100,23 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Behind the lens */}
+      <section className="bg-night pb-20 md:pb-28">
+        <Container>
+          <p className="mb-6 font-mono text-[10px] uppercase tracking-hud text-bone/45">
+            <span className="text-saffron">●</span> Behind the lens
+          </p>
+          <div className="no-scrollbar -mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
+            {["akshat-prone", "akshat-lake", "akshat-pushkar", "akshat-silhouette"].map((id) => (
+              <figure key={id} className="w-[70vw] shrink-0 snap-center sm:w-[40vw] md:w-auto">
+                <FocusImage p={photo(id)} inView sizes="(min-width:768px) 25vw, 70vw" className="relative aspect-[4/5] bg-soot" />
+                <figcaption className="mt-2 font-mono text-[9px] uppercase tracking-hud text-bone/45">{photo(id).title}</figcaption>
+              </figure>
+            ))}
           </div>
         </Container>
       </section>

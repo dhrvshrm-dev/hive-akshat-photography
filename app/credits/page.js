@@ -20,7 +20,7 @@ export default function CreditsPage() {
       <section className="bg-night py-16 md:py-24">
         <Container>
           <ul className="border-t border-line font-mono text-[11px] tracking-hud">
-            {photos.map((p) => (
+            {photos.filter((p) => !p.credit.own).map((p) => (
               <li
                 key={p.id}
                 className="grid gap-1 border-b border-line py-4 md:grid-cols-[1.2fr_1fr_0.6fr_auto] md:gap-6"

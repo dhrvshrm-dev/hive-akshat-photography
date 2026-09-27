@@ -26,12 +26,12 @@ export const lens = [
   {
     title: "Wildlife & Nature",
     text: "Exploring India's birds, animals, forests, and changing seasons, Akshat's nature photography highlights the delicate relationship between wildlife and its environment—from flamingos and painted storks to landscapes shaped by Rajasthan's monsoon skies.",
-    image: "flamingos",
+    image: "pelican-catch",
   },
   {
     title: "Tourism & Destination Storytelling",
     text: "Collaborating with Incredible India, Rajasthan Tourism, Gujarat Tourism, Madhya Pradesh Tourism, and Uttar Pradesh Tourism, Akshat's digital campaigns and reels have brought iconic destinations—like the Pushkar Fair, Rann Utsav, and historic forts—to global audiences.",
-    image: "pushkar-camels",
+    image: "pushkar-fair-line",
   },
   {
     title: "Film & Video Production",
@@ -112,5 +112,5 @@ export const ventures = {
 
 export const community = {
   title: "Knowledge Sharing & Community",
-  text: "Akshat regularly conducts sessions on visual storytelling, digital content creation, and observational photography at institutions like MNIT Jaipur and RK Patni Girls College, Ajmer. He frequently serves as a judge for inter-college photography competitions, inspiring youth to harness the power of visual communication responsibly.",
+  text: "Akshat regularly conducts sessions on visual storytelling, digital content creation, and observational photography at institutions like MNIT Jaipur and Shri Ratanlal Kanwarlal Patni Girls' College, Kishangarh. He frequently serves as a judge for inter-college photography competitions, inspiring youth to harness the power of visual communication responsibly.",
 };
