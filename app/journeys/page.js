@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/seo";
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -8,11 +9,12 @@ import CTA from "@/components/sections/CTA";
 import { abroadJourneys, indiaJourneys, journeys } from "@/data/journeys";
 import { photos } from "@/data/photos";
 
-export const metadata = {
-  title: "Journeys — Hive Akshat Photography",
+export const metadata = pageMeta({
+  title: "Journeys — Photography from Ajmer, Pushkar, Rajasthan & across India",
   description:
-    "Ten journeys across India — Pushkar, the Thar, Varanasi, Ladakh, Sikkim, Hampi, Kerala and more — photographed by Akshat Singh Chaudhary (Hive Akshat).",
-};
+    "Photographs by Akshat Singh Chaudhary from Ajmer, Pushkar, Sambhar, Jaipur, Jodhpur, the Rann of Kutch, Varanasi, the north-east and beyond — wildlife, heritage, landscapes and aerials.",
+  path: "/journeys",
+});
 
 export default function JourneysPage() {
   const frames = photos.filter((p) => p.archive !== false).length;

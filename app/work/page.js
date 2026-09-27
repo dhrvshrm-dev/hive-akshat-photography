@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/seo";
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -5,11 +6,12 @@ import ServiceList from "@/components/sections/ServiceList";
 import Departures from "@/components/sections/Departures";
 import CTA from "@/components/sections/CTA";
 
-export const metadata = {
-  title: "Work — Akshat Singh Chaudhary · Hive Akshat",
+export const metadata = pageMeta({
+  title: "Work — Wildlife, Nature, Aerial & Astrophotography in Rajasthan",
   description:
-    "Wildlife, landscapes, nature, astrophotography and aerial work by Akshat Singh Chaudhary (Hive Akshat), Ajmer — with heritage, films, tourism collaborations and talks.",
-};
+    "Wildlife and bird photography at Ana Sagar and Sambhar, landscapes, nature, drone and aerial work, astrophotography, heritage, films and tourism collaborations by Akshat Singh Chaudhary.",
+  path: "/work",
+});
 
 export default function WorkPage() {
   return (

@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/seo";
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
@@ -23,11 +24,13 @@ import {
   ventures,
 } from "@/data/about";
 
-export const metadata = {
-  title: `About — ${site.person} · ${site.name}`,
+export const metadata = pageMeta({
+  title:
+    "About Akshat Singh Chaudhary — Photographer, Filmmaker & Educationist",
   description:
-    "Akshat Singh Chaudhary — photographer, filmmaker, visual storyteller, tourism promoter, educationist and entrepreneur from Ajmer, Rajasthan.",
-};
+    "The story of Akshat Singh Chaudhary (Hive Akshat) of Ajmer: two decades of wildlife, heritage and aerial photography, tourism collaborations, awards, and his schools and hospitality ventures.",
+  path: "/about",
+});
 
 // FILL IN: a real portrait of Akshat (drop it in /public/images and add it to data/photos.js).
 const portrait = photo("akshat-sunset");
@@ -111,10 +114,25 @@ export default function AboutPage() {
             <span className="text-saffron">●</span> Behind the lens
           </p>
           <div className="no-scrollbar -mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
-            {["akshat-prone", "akshat-lake", "akshat-pushkar", "akshat-silhouette"].map((id) => (
-              <figure key={id} className="w-[70vw] shrink-0 snap-center sm:w-[40vw] md:w-auto">
-                <FocusImage p={photo(id)} inView sizes="(min-width:768px) 25vw, 70vw" className="relative aspect-[4/5] bg-soot" />
-                <figcaption className="mt-2 font-mono text-[9px] uppercase tracking-hud text-bone/45">{photo(id).title}</figcaption>
+            {[
+              "akshat-prone",
+              "akshat-lake",
+              "akshat-pushkar",
+              "akshat-silhouette",
+            ].map((id) => (
+              <figure
+                key={id}
+                className="w-[70vw] shrink-0 snap-center sm:w-[40vw] md:w-auto"
+              >
+                <FocusImage
+                  p={photo(id)}
+                  inView
+                  sizes="(min-width:768px) 25vw, 70vw"
+                  className="relative aspect-[4/5] bg-soot"
+                />
+                <figcaption className="mt-2 font-mono text-[9px] uppercase tracking-hud text-bone/45">
+                  {photo(id).title}
+                </figcaption>
               </figure>
             ))}
           </div>

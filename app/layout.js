@@ -12,6 +12,7 @@ import ScrollProgress from "@/components/ui/ScrollProgress";
 import GLStage from "@/components/webgl/GLStage";
 import { introHeadScript } from "@/lib/intro";
 import { site } from "@/data/site";
+import { KEYWORDS, OG_IMAGE, SITE_URL, structuredData } from "@/lib/seo";
 
 // Fonts are self-hosted in /app/fonts, so the site builds anywhere with no external dependency.
 const display = localFont({
@@ -35,22 +36,53 @@ const mono = localFont({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://hiveakshat.com"),
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${site.person} — Wildlife & Travel Photographer, Ajmer, Rajasthan | ${site.name}`,
+    template: `%s | ${site.name}`,
+  },
+  description:
+    "Akshat Singh Chaudhary (Hive Akshat) is a wildlife, nature, aerial and heritage photographer and filmmaker from Ajmer, Rajasthan — two decades of work, collaborations with Incredible India and state tourism boards, and awards from PHDCCI, News18 Rajasthan and the Government of Rajasthan.",
+  keywords: KEYWORDS,
+  applicationName: site.name,
   creator: site.developer.name,
   authors: [
-    { name: site.person },
+    { name: site.person, url: "/about" },
     { name: site.developer.name, url: `mailto:${site.developer.email}` },
   ],
-  title: `${site.name} — ${site.person} · Photographer & Filmmaker, ${site.location}`,
-  description:
-    "Akshat Singh Chaudhary (Hive Akshat) — photographer, filmmaker and visual storyteller from Ajmer, Rajasthan, documenting India's culture, heritage, wildlife and landscapes for more than two decades. Collaborations with Incredible India and state tourism boards.",
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
   openGraph: {
-    title: `${site.name} — ${site.person}`,
+    type: "website",
+    locale: "en_IN",
+    siteName: `${site.name} — ${site.person}`,
+    title: `${site.person} — Wildlife & Travel Photographer, Ajmer`,
     description:
       "Photographer · Filmmaker · Visual Storyteller. Rajasthan is his inspiration; India is his canvas.",
-    type: "website",
-    images: ["/images/photos/ana-sagar-sunset-aerial.jpg"],
+    url: "/",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Ana Sagar at sunset — photographed from the air by Akshat Singh Chaudhary",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    site: "@Hive_akshat",
+    creator: "@Hive_akshat",
+  },
+  // Paste the code from Google Search Console → Settings → Ownership (HTML tag).
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
+  category: "photography",
 };
 
 export const viewport = {
@@ -68,6 +100,11 @@ export default function RootLayout({ children }) {
         {/* Decides before first paint whether the diya intro runs, so the
             curtain below is either kept or dropped with no flash. */}
         <script dangerouslySetInnerHTML={{ __html: introHeadScript }} />
+        {/* Who he is, for Google: name, work, awards, profiles (schema.org). */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData()) }}
+        />
       </head>
       <body className="font-sans">
         <div className="intro-curtain" aria-hidden="true" />

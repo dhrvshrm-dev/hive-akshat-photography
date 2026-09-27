@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/seo";
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
@@ -6,11 +7,12 @@ import GoldenHour from "@/components/forms/GoldenHour";
 import SocialIcon from "@/components/ui/SocialIcon";
 import { site, socialLinks } from "@/data/site";
 
-export const metadata = {
-  title: "Contact — Hive Akshat Photography",
+export const metadata = pageMeta({
+  title: "Contact Akshat Singh Chaudhary — Collaborations, Talks & Press",
   description:
-    "Contact Akshat Singh Chaudhary (Hive Akshat) for tourism collaborations, talks, workshops, judging and press — based in Ajmer, Rajasthan.",
-};
+    "Get in touch with Akshat Singh Chaudhary (Hive Akshat), Ajmer, Rajasthan, for tourism collaborations, talks, workshops, judging and press.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (
