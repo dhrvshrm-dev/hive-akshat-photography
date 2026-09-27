@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { introWanted, markIntroDone } from "@/lib/intro";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import { photo } from "@/data/photos";
+import { glSrc } from "@/lib/gl/textures";
 import { fmtCoords, fmtTakenTime } from "@/lib/format";
 
 const HOLD_MS = 1300;
@@ -61,7 +62,10 @@ export default function DiyaIntro() {
   useEffect(() => {
     const v = document.documentElement.getAttribute("data-intro");
     if (v === "skip" || v === "done" || !introWanted()) {
-      document.documentElement.setAttribute("data-intro", v === "done" ? "done" : "skip");
+      document.documentElement.setAttribute(
+        "data-intro",
+        v === "done" ? "done" : "skip",
+      );
       return;
     }
     setShow(true);
@@ -292,7 +296,7 @@ export default function DiyaIntro() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={photoRef}
-        src={shot.src}
+        src={glSrc(shot.src, 1920)}
         alt=""
         className="absolute inset-0 h-full w-full object-cover will-change-transform"
         style={{

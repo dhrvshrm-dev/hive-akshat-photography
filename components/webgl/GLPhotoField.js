@@ -15,7 +15,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { registerItem } from "@/lib/gl/stage";
-import { aspectOf, coverScale, loadTexture } from "@/lib/gl/textures";
+import { aspectOf, coverScale, glSrc, loadTexture } from "@/lib/gl/textures";
 import { LUMINANCE, COVER_UV, SCROLL_BEND } from "@/lib/gl/glsl";
 
 // Each card is its own draw call — the textures differ, so they cannot be
@@ -168,13 +168,20 @@ function createField(sources, options, env) {
         const home = new THREE.Vector3(
           -width / 2 + (i + 0.5) * cellW,
           height / 2 - (j + 0.5) * cellH,
-          0
+          0,
         );
         // Everything starts stacked on the centre line and unfolds sideways
         // before it drops into rows — see the y target in update().
         mesh.position.set(0, 0, 0);
         // slot is what applyTexture() matches on when a photograph lands.
-        cards.push({ mesh, material, slot, home, target: new THREE.Vector3(), size });
+        cards.push({
+          mesh,
+          material,
+          slot,
+          home,
+          target: new THREE.Vector3(),
+          size,
+        });
         group.add(mesh);
       }
     }
@@ -182,8 +189,9 @@ function createField(sources, options, env) {
     for (let i = 0; i < textures.length; i++) applyTexture(i);
   }
 
+  // Cards swell to ~3x under the cursor; 384 px covers that on a retina screen.
   sources.forEach((src, i) => {
-    loadTexture(src).then((tex) => {
+    loadTexture(glSrc(src, 384)).then((tex) => {
       if (!tex) return;
       textures[i] = tex;
       applyTexture(i);
@@ -236,8 +244,13 @@ function createField(sources, options, env) {
 
         // y is held on the centre line until x has nearly arrived — this is
         // what makes the field unfold sideways and then drop into rows.
-        const settledX = Math.abs(card.home.x - mesh.position.x) < Math.max(8, width * 0.04);
-        card.target.set(card.home.x, settledX ? card.home.y : 0, mesh.position.z);
+        const settledX =
+          Math.abs(card.home.x - mesh.position.x) < Math.max(8, width * 0.04);
+        card.target.set(
+          card.home.x,
+          settledX ? card.home.y : 0,
+          mesh.position.z,
+        );
         mesh.position.lerp(card.target, positionRate);
       }
     },
@@ -268,7 +281,9 @@ export default function GLPhotoField({
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return;
-    const srcs = (images || []).map((i) => (typeof i === "string" ? i : i && i.src)).filter(Boolean);
+    const srcs = (images || [])
+      .map((i) => (typeof i === "string" ? i : i && i.src))
+      .filter(Boolean);
     if (!srcs.length) return;
     const options = {
       cell: Math.max(40, cell),
@@ -280,7 +295,7 @@ export default function GLPhotoField({
     const unregister = registerItem(
       el,
       (env) => createField(srcs, options, env),
-      () => setLive(true)
+      () => setLive(true),
     );
     return () => {
       setLive(false);
@@ -298,7 +313,9 @@ export default function GLPhotoField({
     >
       {/* Whatever the section renders for non-WebGL visitors, gone once the
           field is drawing. */}
-      <div style={{ opacity: live ? 0 : 1, transition: "opacity 500ms linear" }}>
+      <div
+        style={{ opacity: live ? 0 : 1, transition: "opacity 500ms linear" }}
+      >
         {children}
       </div>
     </div>

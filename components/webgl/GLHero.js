@@ -17,7 +17,13 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { registerItem } from "@/lib/gl/stage";
-import { aspectOf, coverScale, loadTexture } from "@/lib/gl/textures";
+import {
+  aspectOf,
+  coverScale,
+  glSrc,
+  heroWidth,
+  loadTexture,
+} from "@/lib/gl/textures";
 import { COVER_UV } from "@/lib/gl/glsl";
 import { blurAt, mixAt } from "@/lib/focusTimeline";
 
@@ -132,11 +138,14 @@ function createHero(images, controller, env, onFirstFrame) {
   };
   applySize(env.width, env.height);
 
-  images.forEach((src, i) => {
-    loadTexture(src).then((tex) => {
+  // The first frame is fetched on its own; the rest follow once it has landed,
+  // so on a slow phone the frame on screen is never queued behind five others.
+  const px = heroWidth();
+  const load = (i) =>
+    loadTexture(glSrc(images[i], px)).then((tex) => {
       if (tex) textures[i] = tex;
     });
-  });
+  load(0).then(() => images.forEach((_, i) => i > 0 && load(i)));
 
   return {
     group,
@@ -159,7 +168,8 @@ function createHero(images, controller, env, onFirstFrame) {
       cover(fromTex, u.uCoverFrom.value);
       cover(toTex, u.uCoverTo.value);
 
-      const d = c.changedAt == null ? null : (performance.now() - c.changedAt) / 1000;
+      const d =
+        c.changedAt == null ? null : (performance.now() - c.changedAt) / 1000;
       // An incoming frame that has not decoded yet is held behind full blur
       // rather than cut to — the hunt simply waits for it.
       const ready = Boolean(textures[c.to]);
@@ -170,8 +180,12 @@ function createHero(images, controller, env, onFirstFrame) {
       // pointer, so a still frame is never quite static.
       const hold = d == null ? 0 : Math.max(0, d - 1.6);
       u.uZoom.value = 1.02 + Math.min(hold, 8) * 0.004;
-      const tx = e.pointerInside ? (e.pointerX / Math.max(1, width)) * -0.01 : 0;
-      const ty = e.pointerInside ? (e.pointerY / Math.max(1, height)) * -0.01 : 0;
+      const tx = e.pointerInside
+        ? (e.pointerX / Math.max(1, width)) * -0.01
+        : 0;
+      const ty = e.pointerInside
+        ? (e.pointerY / Math.max(1, height)) * -0.01
+        : 0;
       shift.x += (tx - shift.x) * (1 - Math.exp(-e.dt * 3));
       shift.y += (ty - shift.y) * (1 - Math.exp(-e.dt * 3));
       u.uShift.value.copy(shift);
@@ -189,7 +203,13 @@ function createHero(images, controller, env, onFirstFrame) {
  * `fallback` is ordinary markup for no-WebGL visitors; it fades out once the
  * shader has a frame.
  */
-export default function GLHero({ images, controller, fallback, className = "", style }) {
+export default function GLHero({
+  images,
+  controller,
+  fallback,
+  className = "",
+  style,
+}) {
   const boxRef = useRef(null);
   const [live, setLive] = useState(false);
 
@@ -198,9 +218,8 @@ export default function GLHero({ images, controller, fallback, className = "", s
     if (!el) return;
     const srcs = (images || []).filter(Boolean);
     if (!srcs.length) return;
-    const unregister = registerItem(
-      el,
-      (env) => createHero(srcs, controller, env, () => setLive(true))
+    const unregister = registerItem(el, (env) =>
+      createHero(srcs, controller, env, () => setLive(true)),
     );
     return () => {
       setLive(false);
@@ -212,7 +231,12 @@ export default function GLHero({ images, controller, fallback, className = "", s
     <div ref={boxRef} className={className} style={style}>
       <div
         aria-hidden={live ? "true" : undefined}
-        style={{ position: "absolute", inset: 0, opacity: live ? 0 : 1, transition: "opacity 600ms linear" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: live ? 0 : 1,
+          transition: "opacity 600ms linear",
+        }}
       >
         {fallback}
       </div>

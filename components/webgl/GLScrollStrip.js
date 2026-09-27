@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { registerItem } from "@/lib/gl/stage";
-import { aspectOf, coverScale, loadTexture } from "@/lib/gl/textures";
+import { aspectOf, coverScale, glSrc, loadTexture } from "@/lib/gl/textures";
 import { COVER_UV, LUMINANCE, SCROLL_BEND } from "@/lib/gl/glsl";
 
 const VERTEX = /* glsl */ `
@@ -132,7 +132,7 @@ function createStrip(sources, options, env) {
   layout();
 
   sources.forEach((src, i) => {
-    loadTexture(src).then((tex) => {
+    loadTexture(glSrc(src, 828)).then((tex) => {
       if (!tex) return;
       textures[i] = tex;
       applyTexture(i);
@@ -165,7 +165,10 @@ function createStrip(sources, options, env) {
         // Faded at the two edges of the band so a card slides in and out of the
         // section instead of being chopped off by the scissor rect.
         const edge = width / 2;
-        const t = Math.max(0, Math.min(1, (edge - Math.abs(x)) / (edge * 0.25)));
+        const t = Math.max(
+          0,
+          Math.min(1, (edge - Math.abs(x)) / (edge * 0.25)),
+        );
         card.material.uniforms.uFade.value = t * t * (3 - 2 * t);
         card.material.uniforms.uVelocity.value = e.velocity;
       }
@@ -203,7 +206,7 @@ export default function GLScrollStrip({
     const unregister = registerItem(
       el,
       (env) => createStrip(srcs, { ratio, gap, travel }, env),
-      () => setLive(true)
+      () => setLive(true),
     );
     return () => {
       setLive(false);
