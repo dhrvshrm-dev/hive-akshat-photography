@@ -61,6 +61,8 @@ export const site = {
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],
+  // Who built the site — shown in the footer.
+  developer: { name: "Dhruv Sharma", email: "dev.dhrvshrm@gmail.com" },
   footerNav: [
     { label: "Home", href: "/" },
     { label: "Journeys", href: "/journeys" },

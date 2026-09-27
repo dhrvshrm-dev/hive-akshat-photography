@@ -36,6 +36,11 @@ const mono = localFont({
 
 export const metadata = {
   metadataBase: new URL("https://hiveakshat.com"),
+  creator: site.developer.name,
+  authors: [
+    { name: site.person },
+    { name: site.developer.name, url: `mailto:${site.developer.email}` },
+  ],
   title: `${site.name} — ${site.person} · Photographer & Filmmaker, ${site.location}`,
   description:
     "Akshat Singh Chaudhary (Hive Akshat) — photographer, filmmaker and visual storyteller from Ajmer, Rajasthan, documenting India's culture, heritage, wildlife and landscapes for more than two decades. Collaborations with Incredible India and state tourism boards.",
