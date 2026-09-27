@@ -1,7 +1,8 @@
 "use client";
 // A small wrapper that fades + lifts its children into view on scroll.
 // Reuse it anywhere you want a gentle entrance animation.
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 export default function Reveal({ children, delay = 0, y = 24, className = "" }) {
   const reduce = useReducedMotion();

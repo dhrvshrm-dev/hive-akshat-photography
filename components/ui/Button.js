@@ -2,7 +2,8 @@
 // Link-styled button. variant: "solid" (bone, fills saffron on hover) or "outline".
 // On fine-pointer devices it leans slightly toward the cursor, then springs back.
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { springSoft } from "@/lib/motion";
 
 export default function Button({ href = "#", children, variant = "solid", className = "", ...rest }) {

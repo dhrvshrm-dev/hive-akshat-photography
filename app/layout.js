@@ -36,14 +36,15 @@ const mono = localFont({
 
 export const metadata = {
   metadataBase: new URL("https://hiveakshat.com"),
-  title: `${site.name} — ${site.tagline} · ${site.location}`,
+  title: `${site.name} — ${site.person} · Photographer & Filmmaker, ${site.location}`,
   description:
-    "Hive Akshat is a travel, heritage and spiritual photographer based in Ajmer, Rajasthan — temples, landscapes, architecture and wildlife across India, for tourism boards, hotels and publications.",
+    "Akshat Singh Chaudhary (Hive Akshat) — photographer, filmmaker and visual storyteller from Ajmer, Rajasthan, documenting India's culture, heritage, wildlife and landscapes for more than two decades. Collaborations with Incredible India and state tourism boards.",
   openGraph: {
-    title: `${site.name} — ${site.tagline}`,
-    description: "Chasing light across India. Travel, heritage & spiritual photography from Ajmer.",
+    title: `${site.name} — ${site.person}`,
+    description:
+      "Photographer · Filmmaker · Visual Storyteller. Rajasthan is his inspiration; India is his canvas.",
     type: "website",
-    images: ["/images/photos/zanskar-road.jpg"],
+    images: ["/images/photos/pushkar-ghats.jpg"],
   },
 };
 
@@ -53,7 +54,11 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Decides before first paint whether the diya intro runs, so the
             curtain below is either kept or dropped with no flash. */}

@@ -21,11 +21,19 @@ export default function CreditsPage() {
         <Container>
           <ul className="border-t border-line font-mono text-[11px] tracking-hud">
             {photos.map((p) => (
-              <li key={p.id} className="grid gap-1 border-b border-line py-4 md:grid-cols-[1.2fr_1fr_0.6fr_auto] md:gap-6">
+              <li
+                key={p.id}
+                className="grid gap-1 border-b border-line py-4 md:grid-cols-[1.2fr_1fr_0.6fr_auto] md:gap-6"
+              >
                 <span className="text-bone">{p.title}</span>
                 <span className="text-bone/60">{p.credit.author}</span>
                 <span className="text-bone/45">{p.credit.license}</span>
-                <a href={p.credit.source} target="_blank" rel="noopener noreferrer" className="link-sweep w-fit uppercase text-bone/60 hover:text-saffron">
+                <a
+                  href={p.credit.source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-sweep w-fit uppercase text-bone/60 hover:text-saffron"
+                >
                   Source ↗
                 </a>
               </li>

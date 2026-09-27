@@ -16,11 +16,12 @@ import { photos } from "@/data/photos";
 import { ease } from "@/lib/motion";
 
 const BLURB = {
-  Sacred: "Aarti, gompa, gurdwara, mandir. Ritual, light and permission.",
-  Landscape: "Dunes, passes, lakes at five thousand metres.",
-  Architecture: "Forts, stepwells, jharokhas — stone that holds light.",
-  People: "Boatmen, sadhus, shepherds. The faces of a place.",
-  Wild: "A tigress, a camel, a macaque on the ramparts.",
+  Heritage: "Forts, palaces, stepwells and ghats — stone that holds light.",
+  Landscape: "The White Rann, Himalayan snow, cities by the sea.",
+  Wildlife: "Flamingos at Sambhar, painted storks at Ajmer, rhinos in Assam.",
+  Nature: "Monsoon skies, waterfalls and forests.",
+  Aerial: "Forts and cities, seen from above.",
+  Culture: "Fairs, aarti and the people of a place.",
 };
 
 const rows = Object.keys(BLURB).map((d) => ({
@@ -62,7 +63,7 @@ export default function Disciplines() {
   return (
     <section className="relative bg-night py-28 md:py-40">
       <Container>
-        <SectionHeading index="05" eyebrow="The archive" title={[{ text: "Five ways" }, { text: "of looking.", emphasis: true }]} />
+        <SectionHeading index="05" eyebrow="The archive" title={[{ text: "Six ways" }, { text: "of looking.", emphasis: true }]} />
       </Container>
 
       <div ref={areaRef} className="relative mt-16 md:mt-20" onMouseMove={fine ? onMove : undefined} onMouseLeave={() => setActive(null)}>

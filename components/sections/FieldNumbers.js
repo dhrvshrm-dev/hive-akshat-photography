@@ -8,17 +8,19 @@ import { journeys } from "@/data/journeys";
 // photographs are added or replaced.
 export default function FieldNumbers() {
   const archive = photos.filter((p) => p.archive !== false);
-  const highest = archive.reduce((a, p) => ((p.alt || 0) > (a.alt || 0) ? p : a), archive[0]);
-  const south = archive.reduce((a, p) => (p.lat < a.lat ? p : a), archive[0]);
-  const north = archive.reduce((a, p) => (p.lat > a.lat ? p : a), archive[0]);
-  const regions = new Set(archive.map((p) => p.region)).size;
+  const india = archive.filter((p) => !p.abroad);
+  const countries = 1 + new Set(archive.filter((p) => p.abroad).map((p) => p.region)).size;
+  const highest = india.reduce((a, p) => ((p.alt || 0) > (a.alt || 0) ? p : a), india[0]);
+  const south = india.reduce((a, p) => (p.lat < a.lat ? p : a), india[0]);
+  const north = india.reduce((a, p) => (p.lat > a.lat ? p : a), india[0]);
+  const regions = new Set(india.map((p) => p.region)).size;
   // Great-circle-ish north–south spread, in km.
   const spread = Math.round((north.lat - south.lat) * 111);
 
   const stats = [
     { to: highest.alt, suffix: " m", label: "Highest frame", note: highest.place },
     { to: spread, suffix: " km", label: "North to south", note: `${north.place} → ${south.place}` },
-    { to: regions, suffix: "", label: "States & regions", note: `${journeys.length} journeys` },
+    { to: regions, suffix: "", label: "Indian states", note: `${countries} countries · ${journeys.length} journeys` },
     { to: archive.length, suffix: "", label: "Frames on this site", note: "and counting" },
   ];
 

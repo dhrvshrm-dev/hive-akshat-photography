@@ -1,26 +1,43 @@
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
-import Showreel from "@/components/sections/Showreel";
-import GalleryGrid from "@/components/gallery/GalleryGrid";
+import SectionHeading from "@/components/ui/SectionHeading";
+import ServiceList from "@/components/sections/ServiceList";
+import Departures from "@/components/sections/Departures";
 import CTA from "@/components/sections/CTA";
 
 export const metadata = {
-  title: "Work — Hive Akshat Photography",
-  description: "Weddings, pre-weddings and events photographed by Hive Akshat across Rajasthan.",
+  title: "Work — Akshat Singh Chaudhary · Hive Akshat",
+  description:
+    "Wildlife, landscapes, nature, astrophotography and aerial work by Akshat Singh Chaudhary (Hive Akshat), Ajmer — with heritage, films, tourism collaborations and talks.",
 };
 
 export default function WorkPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Portfolio"
-        title="The work"
-        intro="A collection of weddings, pre-weddings and functions. Use the filters to explore, and tap any image to view it full-screen."
+        eyebrow="Work"
+        title={[{ text: "What I" }, { text: "photograph.", emphasis: true }]}
+        intro="Wildlife, landscapes, nature, the night sky and the view from above — plus the films, tourism collaborations and talks that grow out of them."
+        meta="No commercial shoots · Collaborations & talks welcome"
       />
-      <Showreel />
-      <section className="py-24">
+      <section className="bg-night py-20 md:py-28">
         <Container>
-          <GalleryGrid />
+          <ServiceList />
+        </Container>
+      </section>
+      <section className="border-t border-line bg-night py-24 md:py-32">
+        <Container>
+          <SectionHeading
+            index="→"
+            eyebrow="Knowledge sharing & community"
+            title={[
+              { text: "Talks, workshops" },
+              { text: "& judging.", emphasis: true },
+            ]}
+            intro="Sessions on visual storytelling, digital content creation and observational photography — and judging inter-college photography competitions. Invite me to your institution."
+            className="mb-14"
+          />
+          <Departures />
         </Container>
       </section>
       <CTA />

@@ -11,11 +11,12 @@
 // screen "cinema" with letterbox bars. The page stays as fast as it was.
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import FocusImage from "@/components/ui/FocusImage";
-import { films } from "@/data/films";
+import { films, filmsChannel } from "@/data/films";
 import { photo } from "@/data/photos";
 import { ease } from "@/lib/motion";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
@@ -105,7 +106,7 @@ function CamcorderOSD({ f, running }) {
       <div className="absolute bottom-7 left-7 flex gap-5 md:bottom-10 md:left-10">
         <span>{f.lens || "—"}</span>
         <span className="text-bone/60">1/1000 · f/5.6</span>
-        <span className="hidden text-bone/60 sm:inline">AF-C · Subject: Animal</span>
+        <span className="hidden text-bone/60 sm:inline">{f.kind === "Wildlife" ? "AF-C · Subject: Animal" : f.kind}</span>
       </div>
     </div>
   );
@@ -140,7 +141,8 @@ function Player({ film, onClose }) {
           <motion.span className="absolute inset-x-0 top-0 z-10 h-[8vh] bg-black" initial={{ y: "-100%" }} animate={{ y: 0 }} exit={{ y: "-100%" }} transition={{ duration: 0.5, ease }} />
           <motion.span className="absolute inset-x-0 bottom-0 z-10 h-[8vh] bg-black" initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ duration: 0.5, ease }} />
           <motion.div
-            className="relative aspect-video w-full max-w-[min(100vw,calc(84vh*16/9))]"
+            // Shorts and reels play upright; everything else is 16:9.
+            className={film.vertical ? "relative aspect-[9/16] h-[80vh] max-w-[92vw]" : "relative aspect-video w-full max-w-[min(100vw,calc(84vh*16/9))]"}
             initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.96, opacity: 0 }}
@@ -191,8 +193,8 @@ export default function Films() {
       <Container>
         <SectionHeading
           index="04"
-          eyebrow="Films · Drone & wildlife"
-          title={[{ text: "From the air," }, { text: "and from the long grass.", emphasis: true }]}
+          eyebrow="Films · Songs, drone & reels"
+          title={[{ text: "From the air," }, { text: "and behind the camera.", emphasis: true }]}
         />
       </Container>
 
@@ -227,7 +229,7 @@ export default function Films() {
             <span className="text-right">
               <span className="block font-display text-2xl text-bone md:text-4xl">{f.title}</span>
               <span className="mt-1 block font-mono text-[10px] uppercase tracking-hud text-bone/60">
-                {f.place} · {f.duration}
+                {f.credit ? `${f.credit} · ` : ""}{f.place}{f.duration ? ` · ${f.duration}` : ""}
               </span>
             </span>
           </span>
@@ -251,18 +253,33 @@ export default function Films() {
                   </span>
                   <span className="min-w-0">
                     <span className={`block font-mono text-[9px] uppercase tracking-hud ${on ? "text-saffron" : "text-bone/40"}`}>
-                      {String(i + 1).padStart(2, "0")} · {film.kind} · {film.duration}
+                      {String(i + 1).padStart(2, "0")} · {film.credit || film.kind}{film.duration ? ` · ${film.duration}` : ""}
                     </span>
                     <span className={`mt-1 block font-display text-xl leading-tight transition-colors ${on ? "text-bone" : "text-bone/60 group-hover:text-bone"}`}>
                       {film.title}
                     </span>
-                    <span className="mt-0.5 block truncate text-sm text-bone/40">{film.place}</span>
+                    <span className="mt-0.5 block truncate text-sm text-bone/40">
+                      {film.place}
+                      {film.note ? ` · ${film.note}` : ""}
+                    </span>
                   </span>
                 </button>
               </li>
             );
           })}
         </ol>
+      </div>
+
+      <div className="mx-auto mt-10 max-w-[110rem] px-5 md:px-12">
+        <a
+          href={filmsChannel}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-hud text-bone/70 transition-colors hover:text-saffron"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ff3b30]" />
+          More films on YouTube · @hive_akshat ↗
+        </a>
       </div>
 
       <Player film={playing} onClose={close} />

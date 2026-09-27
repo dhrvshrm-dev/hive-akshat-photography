@@ -21,3 +21,6 @@ npm-debug.log*
 
 # vercel
 .vercel
+
+# Client's raw photo drop — never committed or deployed
+/incoming/

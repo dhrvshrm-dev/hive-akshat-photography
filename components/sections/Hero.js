@@ -8,7 +8,8 @@
 // real EXIF, plus where on earth it was made.
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import Button from "@/components/ui/Button";
 import SplitText from "@/components/ui/SplitText";
 import Readout from "@/components/ui/Readout";
@@ -20,7 +21,7 @@ import { whenIntroDone } from "@/lib/intro";
 import { fmtAlt, fmtLat, fmtLon, fmtTaken, fmtTakenTime } from "@/lib/format";
 import { ease } from "@/lib/motion";
 
-const FRAMES = ["zanskar-road", "golden-temple", "thar-dromedary", "gurudongmar", "bengal-tiger", "varanasi-sadhu"].map(photo);
+const FRAMES = ["mehrangarh", "flamingos", "varanasi-puja", "meghalaya-falls", "pushkar-ghats", "rann-camels"].map(photo);
 const HOLD_MS = 6200; // how long a frame is held once locked
 
 // Where on screen a point of the photo lands once it is cropped to cover the
@@ -306,7 +307,8 @@ export default function Hero() {
           className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-hud text-bone/70"
         >
           <span className="h-px w-8 bg-saffron" />
-          {site.tagline}
+          <span className="text-bone">{site.person}</span>
+          <span className="hidden text-bone/50 sm:inline">· {site.tagline}</span>
         </motion.p>
         <SplitText as="h1" delay={0.4} stagger={0.07} className="block max-w-5xl font-display text-fluid-xl text-bone">
           {[{ text: "Chasing light" }, { text: "across India.", emphasis: true }]}
@@ -319,7 +321,7 @@ export default function Hero() {
         >
           <Button href="/journeys">Enter the journeys</Button>
           <Button href="/contact" variant="outline">
-            Plan a shoot
+            Get in touch
           </Button>
         </motion.div>
       </motion.div>

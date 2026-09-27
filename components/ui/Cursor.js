@@ -7,7 +7,8 @@
 // tagged data-cursor="…") it opens into a wider box with a mono label instead,
 // because locking round a full-bleed image would just outline the screen.
 import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 const REST = 30; // px, the idle AF box
 const MEDIA = 86; // px, the box over a photograph
@@ -22,6 +23,9 @@ export default function Cursor() {
   const [label, setLabel] = useState(null);
   const [down, setDown] = useState(false);
   const [visible, setVisible] = useState(false);
+  // Over a light surface (the paper sections) the cursor turns dark ink, or it
+  // would vanish into the page.
+  const [onLight, setOnLight] = useState(false);
 
   const px = useMotionValue(-200);
   const py = useMotionValue(-200);
@@ -71,6 +75,7 @@ export default function Cursor() {
         setMode(next.mode);
       }
       setLabel(next.label);
+      setOnLight(Boolean(e.target.closest?.(".bg-paper, [data-cursor-theme=\"light\"]")));
     };
     const press = () => setDown(true);
     const release = () => setDown(false);
@@ -123,13 +128,15 @@ export default function Cursor() {
   if (!enabled) return null;
 
   const hot = mode !== "rest";
-  const color = hot ? "#F0782D" : "rgba(237,230,218,0.85)";
+  const color = hot ? "#F0782D" : onLight ? "#16130F" : "rgba(237,230,218,0.9)";
+  // A hairline halo in the opposite tone keeps it readable over busy photos too.
+  const halo = onLight ? "drop-shadow(0 0 1px rgba(237,230,218,0.9))" : "drop-shadow(0 0 1px rgba(10,9,8,0.9)) drop-shadow(0 0 2px rgba(10,9,8,0.5))";
 
   return (
     <div
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-[120]"
-      style={{ opacity: visible ? 1 : 0, transition: "opacity 200ms linear" }}
+      style={{ opacity: visible ? 1 : 0, transition: "opacity 200ms linear", filter: halo }}
     >
       {/* The AF box: four corners of a rectangle that springs to its target. */}
       <motion.div

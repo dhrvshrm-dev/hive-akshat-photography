@@ -4,7 +4,8 @@
 // and opens into the review-screen lightbox.
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { disciplines, photos } from "@/data/photos";
 import Lightbox from "@/components/gallery/Lightbox";
 import { ease, springSnappy } from "@/lib/motion";

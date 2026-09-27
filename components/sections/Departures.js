@@ -1,11 +1,11 @@
 "use client";
-// Upcoming walks and expeditions, as a split-flap departures board: each cell
-// flips through characters before landing, row by row, as the board comes into view.
+// Talks, workshops and judging, as a split-flap board: each cell flips through
+// characters before landing, row by row, as the board comes into view.
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import { departures } from "@/data/services";
+import { sessions } from "@/data/services";
 
-const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,";
 
 function Flap({ text, start, delay }) {
   const [shown, setShown] = useState(() => text.replace(/./g, " "));
@@ -38,10 +38,10 @@ function Flap({ text, start, delay }) {
 export default function Departures() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
-  const cols = ["Departure", "From", "When", "Length", "Seats"];
+  const cols = ["Subject", "Where", "Format"];
   return (
     <div ref={ref} className="overflow-x-auto no-scrollbar">
-      <table className="w-full min-w-[640px] border-collapse font-mono text-[12px] uppercase tracking-hud">
+      <table className="w-full min-w-[560px] border-collapse font-mono text-[12px] uppercase tracking-hud">
         <thead>
           <tr className="text-left text-[9px] text-bone/40">
             {cols.map((c) => (
@@ -50,16 +50,14 @@ export default function Departures() {
           </tr>
         </thead>
         <tbody>
-          {departures.map((d, i) => (
-            <tr key={d.what} className="border-b border-line text-bone">
+          {sessions.map((d, i) => (
+            <tr key={d.what + d.where} className="border-b border-line text-bone">
               <td className="py-4 pr-4 text-ember"><Flap text={d.what.toUpperCase()} start={inView} delay={i * 120} /></td>
               <td className="py-4 pr-4"><Flap text={d.where.toUpperCase()} start={inView} delay={i * 120 + 60} /></td>
-              <td className="py-4 pr-4"><Flap text={d.when.toUpperCase()} start={inView} delay={i * 120 + 100} /></td>
-              <td className="py-4 pr-4 text-bone/70"><Flap text={d.length.toUpperCase()} start={inView} delay={i * 120 + 140} /></td>
               <td className="py-4">
                 <span className="inline-flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-saffron" />
-                  <Flap text={String(d.seats).padStart(2, "0")} start={inView} delay={i * 120 + 180} />
+                  <span className="h-1.5 w-1.5 rounded-full bg-saffron" />
+                  <Flap text={d.kind.toUpperCase()} start={inView} delay={i * 120 + 120} />
                 </span>
               </td>
             </tr>

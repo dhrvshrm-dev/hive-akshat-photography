@@ -3,7 +3,8 @@
 // base speed, the page's scroll velocity is added on top, and the direction
 // follows the scroll — so it speeds up, slows down and turns with you.
 import { useRef } from "react";
-import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
+import { motion, useAnimationFrame, useMotionValue, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { placesMarquee } from "@/data/site";
 
 const wrap = (min, max, v) => {

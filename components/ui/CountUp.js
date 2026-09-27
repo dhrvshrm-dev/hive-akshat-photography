@@ -1,7 +1,8 @@
 "use client";
 // Counts from zero up to `to` the first time it scrolls into view.
 import { useEffect, useRef, useState } from "react";
-import { animate, useInView, useReducedMotion } from "framer-motion";
+import { animate, useInView } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { ease } from "@/lib/motion";
 
 export default function CountUp({ to, suffix = "", className = "" }) {

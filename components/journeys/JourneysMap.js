@@ -6,9 +6,10 @@
 // with a preview of that journey's cover; click to go to its chapter.
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { INDIA, project } from "@/data/indiaMap";
-import { journeys } from "@/data/journeys";
+import { abroadJourneys, indiaJourneys as journeys } from "@/data/journeys";
 import { photo, photos } from "@/data/photos";
 import { site } from "@/data/site";
 import { fmtCoords } from "@/lib/format";
@@ -41,7 +42,7 @@ export default function JourneysMap() {
   const base = project(site.base.lat, site.base.lon);
   const route = useMemo(() => smoothPath([base, ...pins.map((p) => p.xy)]), [pins, base]);
   const dots = useMemo(
-    () => photos.filter((p) => p.archive !== false).map((p) => ({ id: p.id, xy: project(p.lat, p.lon) })),
+    () => photos.filter((p) => p.archive !== false && !p.abroad).map((p) => ({ id: p.id, xy: project(p.lat, p.lon) })),
     []
   );
 
@@ -85,6 +86,21 @@ export default function JourneysMap() {
           </li>
         ))}
       </ol>
+      {abroadJourneys.length > 0 && (
+        <div className="order-3 lg:col-start-1">
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-hud text-bone/45">Beyond India</p>
+          {abroadJourneys.map((j) => (
+            <button
+              key={j.slug}
+              onClick={() => go(j.slug)}
+              className="group flex w-full items-baseline justify-between gap-4 border-y border-line py-4 text-left"
+            >
+              <span className="font-display text-2xl text-bone transition-colors group-hover:text-saffron md:text-3xl">{j.kicker}</span>
+              <span className="font-mono text-[10px] uppercase tracking-hud text-bone/40">→</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* The map */}
       <div className="relative order-1 mx-auto w-full max-w-[640px] lg:order-2">
@@ -155,6 +171,7 @@ export default function JourneysMap() {
               <circle r="26" fill="transparent" />
               {!reduce && (
                 <motion.circle
+                  initial={{ r: 8 }}
                   r="10"
                   fill="none"
                   stroke="#F0782D"

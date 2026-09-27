@@ -1,7 +1,8 @@
 "use client";
 // Reveals a heading one word at a time. Accepts either a plain string, or an array of
 // { text, emphasis } segments so an accented phrase keeps its styling.
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { ease } from "@/lib/motion";
 
 const toWords = (children) => {
@@ -26,7 +27,19 @@ export default function SplitText({
   const words = toWords(children);
   const label = words.map((w) => w.word).join(" ");
 
-  if (reduce) return <Tag className={className}>{label}</Tag>;
+  if (reduce) {
+    const segments = Array.isArray(children) ? children : [{ text: children }];
+    return (
+      <Tag className={className}>
+        {segments.map((seg, i) => (
+          <span key={i} className={seg.emphasis ? "italic text-ember" : ""}>
+            {seg.text}
+            {i < segments.length - 1 ? " " : ""}
+          </span>
+        ))}
+      </Tag>
+    );
+  }
 
   const MotionTag = motion[Tag] || motion.span;
   const animateProps = whileInView

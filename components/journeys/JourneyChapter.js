@@ -106,7 +106,7 @@ export default function JourneyChapter({ j, index, total }) {
               <dl className="mt-10 grid grid-cols-2 gap-px bg-line font-mono text-[10px] uppercase tracking-hud">
                 {[
                   ["Season", j.season],
-                  ["Best light", j.bestLight],
+                  ["Region", j.region],
                   ["Altitude", fmtAlt(frames[0].alt)],
                   ["Coordinates", fmtCoords(j.lat, j.lon)],
                 ].map(([k, v]) => (

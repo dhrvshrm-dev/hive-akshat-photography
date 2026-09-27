@@ -4,9 +4,10 @@
 // from a sliver to full width as their turn comes — the text *shows* what it says.
 import { useRef } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import Container from "@/components/ui/Container";
-import { manifesto } from "@/data/site";
+import { manifesto, philosophy, site } from "@/data/site";
 import { photo } from "@/data/photos";
 
 function Word({ children, range, progress, emphasis }) {
@@ -77,7 +78,10 @@ export default function Manifesto() {
             );
           })}
         </p>
-        <p className="mt-12 font-mono text-[10px] uppercase tracking-hud text-bone/40">— Akshat, somewhere past Padum</p>
+        <figure className="mt-16 max-w-2xl border-l border-saffron pl-6">
+          <blockquote className="font-display text-xl italic leading-snug text-bone/75 md:text-2xl">“{philosophy}”</blockquote>
+          <figcaption className="mt-4 font-mono text-[10px] uppercase tracking-hud text-bone/40">— {site.person}</figcaption>
+        </figure>
       </Container>
     </section>
   );

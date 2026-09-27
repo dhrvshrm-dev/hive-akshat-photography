@@ -1,59 +1,118 @@
-// Bodies that have commissioned or recognised Akshat's work, shown as press
-// passes on the home and about pages.
+// Recognition, from Akshat's own brief. Shown in four ways:
 //
-// FILL IN: only the Ministry of Tourism entry is confirmed. The entries marked
-// `placeholder: true` are stand-ins that show the layout — replace each with the
-// real organisation, event and year (or delete it). Never list a body he has
-// not actually worked with.
+//   collaborations  tourism bodies he has made campaigns and reels for — the press passes
+//   commission      the headline commission, given its own feature
+//   honours         awards and appreciation, listed like certificates
+//   press           where the work has been published
 //
-//   org      the organisation, as it should be written
-//   short    a 2–4 letter mark shown large on the pass when there is no logo
-//   logo     optional: path to a logo in /public (SVG or PNG, white/transparent works best)
-//   event    what he covered for them
-//   role     his accreditation on the day
-//   year     when
-export const recognition = [
+// Logos live in /public/logos. `logoOnDark` puts the logo on a dark strip, for
+// marks drawn in white.
+
+export const collaborations = [
   {
-    org: "Ministry of Tourism",
-    sub: "Government of India",
+    org: "Incredible India",
+    sub: "Ministry of Tourism, Government of India",
     short: "MoT",
-    logo: null,
-    event: "Event coverage", // FILL IN: the event name
-    role: "Official photographer",
-    year: "2024", // FILL IN
+    logo: "/logos/incredible-india.svg",
+    logoOnDark: true,
+    work: "Digital campaigns & reels",
+    role: "Tourism promoter",
   },
   {
-    org: "State tourism board",
-    sub: "Replace with the real name",
-    short: "STB",
-    event: "Destination campaign",
-    role: "Campaign photographer",
-    year: "2024",
-    placeholder: true,
+    org: "Rajasthan Tourism",
+    sub: "Government of Rajasthan",
+    short: "RT",
+    logo: "/logos/rajasthan-tourism.png",
+    work: "Pushkar Fair · forts & heritage · state exhibition",
+    role: "Tourism promoter",
   },
   {
-    org: "Cultural festival",
-    sub: "Replace with the real name",
-    short: "FEST",
-    event: "Festival documentation",
-    role: "Accredited media",
-    year: "2023",
-    placeholder: true,
+    org: "Gujarat Tourism",
+    sub: "Government of Gujarat",
+    short: "GT",
+    logo: "/logos/gujarat-tourism.png",
+    work: "Rann Utsav · Rann of Kutch",
+    role: "Collaboration",
   },
   {
-    org: "Heritage trust",
-    sub: "Replace with the real name",
-    short: "HT",
-    event: "Archival documentation",
-    role: "Commissioned photographer",
-    year: "2023",
-    placeholder: true,
+    org: "Madhya Pradesh Tourism",
+    sub: "Government of Madhya Pradesh",
+    short: "MPT",
+    logo: "/logos/mp-tourism.webp",
+    work: "Digital campaigns & reels",
+    role: "Tourism promoter",
+  },
+  {
+    org: "Uttar Pradesh Tourism",
+    sub: "Government of Uttar Pradesh",
+    short: "UPT",
+    logo: "/logos/up-tourism.png",
+    work: "Digital campaigns & reels",
+    role: "Tourism promoter",
   },
 ];
 
-// One line of recognition shown above the passes. FILL IN with the real honour.
+// Shown under the passes.
+export const collaborationsNote =
+  "Plus collaborations with tourism pages on Instagram, promoting destinations across India.";
+
+export const commission = {
+  kicker: "Invited photographer · 31 January 2025",
+  title: "Rashtrapati Bhavan & the Presidential Estate",
+  note: "Invited to document the President's House and its estate — a major milestone in his visual storytelling journey.",
+  // FILL IN: id of a photo from data/photos.js once his Rashtrapati Bhavan frames arrive.
+  image: null,
+};
+
+export const honours = [
+  {
+    title: "Responsible Tourism Influencer Samman",
+    by: "PHDCCI Rajasthan Tourism Awards — awarded in two consecutive years",
+    detail: "21 March 2025 · 21 March 2026",
+    year: "2025 · 2026",
+    logo: "/logos/phdcci.png",
+  },
+  {
+    title: "Wildlife Photography Honour",
+    by: "Presented by Cabinet Minister Shri Suresh Rawat, with the Divisional Commissioner and the Collector of Ajmer",
+    detail: "Independence Day, 15 August 2025",
+    year: "2025",
+  },
+  {
+    title: "Excellence in Photography Award",
+    by: "The Knights of Rajasthan, 94.3 MY FM",
+    year: "2025",
+  },
+  {
+    title: "State-level Photography Exhibition",
+    by: "Rajasthan Tourism — Birla Auditorium, Jaipur",
+    year: "2025",
+  },
+  {
+    title: "Certificate of Appreciation",
+    by: "Government of Rajasthan — presented by Deputy Chief Minister Smt. Diya Kumari",
+    detail:
+      "World Tourism Day, 27 September — for contributions to tourism promotion and heritage",
+    // CHECK: the brief says 27 September 2014, but Smt. Diya Kumari became Deputy
+    // Chief Minister in December 2023 — confirm the year before showing it.
+    year: "",
+  },
+];
+
+export const press = [
+  {
+    name: "Outlook Traveller",
+    href: "https://www.instagram.com/s/aGlnaGxpZ2h0OjE4MTMyMTM4Mzk0NDc5MDM0?story_media_id=3750368871896567756_3020213943&stkn=MXNuc2JsYWdyMm1wdQ==",
+  },
+  { name: "Dainik Bhaskar", href: "" },
+  { name: "State tourism publications", href: "" },
+];
+
 export const recognitionHeadline = {
-  kicker: "Commissioned & recognised by",
-  title: [{ text: "Trusted by the people who" }, { text: "put India on the map.", emphasis: true }],
-  note: "Official coverage for the Ministry of Tourism, Government of India — and the bodies that look after India's festivals, heritage and destinations.",
+  kicker: "Collaborations & recognition",
+  title: [
+    { text: "Trusted by the people who" },
+    { text: "put India on the map.", emphasis: true },
+  ],
+  note: "Digital campaigns and reels with Incredible India and four state tourism boards — bringing the Pushkar Fair, Rann Utsav and India's historic forts to audiences around the world.",
 };

@@ -1,6 +1,7 @@
 "use client";
 // Gives the floating WhatsApp button a delayed entrance and a slow attention pulse.
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 export default function WhatsAppMotionWrap({ children }) {
   const reduce = useReducedMotion();

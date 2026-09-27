@@ -1,18 +1,17 @@
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import BackToTop from "@/components/layout/BackToTop";
-import { site } from "@/data/site";
-import { photos } from "@/data/photos";
+import SocialIcon from "@/components/ui/SocialIcon";
+import { site, socialLinks } from "@/data/site";
 import { fmtCoords } from "@/lib/format";
 
 export default function Footer() {
-  const states = new Set(photos.filter((p) => p.archive !== false).map((p) => p.region)).size;
   return (
     <footer className="relative z-[2] overflow-hidden border-t border-line bg-night">
       <Container className="pb-10 pt-20 md:pt-28">
         <div className="grid gap-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-hud text-saffron">● Base camp</p>
+            <p className="font-mono text-[10px] uppercase tracking-hud text-saffron">● {site.person}</p>
             <p className="mt-5 font-display text-fluid-md text-bone">
               Ajmer, Rajasthan.
               <br />
@@ -44,14 +43,16 @@ export default function Footer() {
             <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="link-sweep mt-2 block w-fit text-sm text-bone/80 hover:text-bone">
               {site.phone}
             </a>
-            <div className="mt-6 flex gap-5 font-mono text-[11px] uppercase tracking-hud">
-              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="link-sweep text-bone/70 hover:text-saffron">
-                Instagram
-              </a>
-              <a href={site.social.youtube} target="_blank" rel="noopener noreferrer" className="link-sweep text-bone/70 hover:text-saffron">
-                YouTube
-              </a>
-            </div>
+            <ul className="mt-6 grid grid-cols-2 gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-hud">
+              {socialLinks.map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} target="_blank" rel="noopener noreferrer" aria-label={`${l.label} ${l.handle}`} className="inline-flex items-center gap-2 text-bone/70 transition-colors hover:text-saffron">
+                    <SocialIcon name={l.icon} className="h-4 w-4 shrink-0" />
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -65,7 +66,7 @@ export default function Footer() {
         </p>
 
         <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 font-mono text-[10px] uppercase tracking-hud text-bone/40 md:flex-row md:items-center md:justify-between">
-          <span>© {new Date().getFullYear()} {site.name} · {photos.length} frames · {states} regions</span>
+          <span>© {new Date().getFullYear()} {site.name} · {site.person}</span>
           <span className="flex items-center gap-6">
             <Link href="/credits" className="link-sweep hover:text-bone">
               Photo credits

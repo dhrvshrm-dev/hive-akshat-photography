@@ -4,7 +4,8 @@
 // phone's own camera app does when you tap to focus. Only on touch screens; a
 // mouse gets the full cursor instead.
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 let nextId = 0;
 

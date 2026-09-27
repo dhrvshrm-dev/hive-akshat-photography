@@ -2,7 +2,8 @@
 // Remounts on every navigation. The shutter (ShutterTransition) carries the
 // visible change between pages; this only softens back/forward navigations,
 // which skip the shutter.
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 export default function Template({ children }) {
   const reduce = useReducedMotion();

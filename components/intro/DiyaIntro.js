@@ -9,7 +9,7 @@
 // It is an overlay over the real, server-rendered page, so crawlers and no-JS
 // visitors never see it. Escape and the skip button always work.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { markIntroDone } from "@/lib/intro";
+import { introWanted, markIntroDone } from "@/lib/intro";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import { photo } from "@/data/photos";
 import { fmtCoords, fmtTakenTime } from "@/lib/format";
@@ -60,7 +60,10 @@ export default function DiyaIntro() {
 
   useEffect(() => {
     const v = document.documentElement.getAttribute("data-intro");
-    if (v === "skip" || v === "done") return;
+    if (v === "skip" || v === "done" || !introWanted()) {
+      document.documentElement.setAttribute("data-intro", v === "done" ? "done" : "skip");
+      return;
+    }
     setShow(true);
     lockScroll("intro");
     const st = s.current;

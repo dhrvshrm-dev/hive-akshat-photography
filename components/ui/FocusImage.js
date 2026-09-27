@@ -6,7 +6,8 @@
 //
 // `className` owns positioning (default "relative"); pass "absolute inset-0" to fill a box.
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 const HUNT = {
   filter: ["blur(18px)", "blur(1.5px)", "blur(6px)", "blur(0px)"],

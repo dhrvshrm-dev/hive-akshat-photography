@@ -3,13 +3,14 @@
 // question the whole site is building to.
 import { useRef } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import Button from "@/components/ui/Button";
 import SplitText from "@/components/ui/SplitText";
 import { photo } from "@/data/photos";
 import { site } from "@/data/site";
 
-const pano = photo("ranikhet-himalaya");
+const pano = photo("manali");
 
 export default function CTA({ title, subtitle }) {
   const ref = useRef(null);
@@ -35,10 +36,10 @@ export default function CTA({ title, subtitle }) {
           {title || [{ text: "Where should we" }, { text: "go next?", emphasis: true }]}
         </SplitText>
         <p className="mx-auto mt-6 max-w-lg text-bone/70">
-          {subtitle || "Campaigns, hotels, festivals, prints or a dawn walk in Pushkar — tell me the place and I'll tell you when the light is best."}
+          {subtitle || "Tourism collaborations, talks and workshops, or a conversation about a photograph — write to me."}
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Button href="/contact">Plan a shoot</Button>
+          <Button href="/contact">Get in touch</Button>
           <Button href={`https://wa.me/${site.whatsapp}`} variant="outline" target="_blank" rel="noopener noreferrer">
             WhatsApp
           </Button>

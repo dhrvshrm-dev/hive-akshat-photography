@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { site } from "@/data/site";
+import SocialIcon from "@/components/ui/SocialIcon";
+import { site, socialLinks } from "@/data/site";
 import { photo } from "@/data/photos";
 import { ease } from "@/lib/motion";
 import { fmtCoords, fmtMinutes, istClock, sunTimes } from "@/lib/format";
@@ -12,10 +13,10 @@ import { lockScroll, unlockScroll } from "@/lib/scroll";
 
 // One frame per menu link, revealed behind the full-screen menu on hover.
 const MENU_FRAMES = {
-  "/journeys": "zanskar-road",
-  "/services": "jaisalmer-fort",
-  "/about": "phuktal",
-  "/contact": "golden-temple",
+  "/journeys": "rann-white",
+  "/work": "flamingos",
+  "/about": "mehrangarh",
+  "/contact": "pushkar-ghats",
 };
 
 /** Live IST clock plus the next sunrise or sunset at base — a camera's info line. */
@@ -184,6 +185,20 @@ export default function Navbar() {
             >
               <p>{site.email}</p>
               <p>{site.phone}</p>
+              <div className="flex gap-2 pt-3">
+                {socialLinks.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${s.label} ${s.handle}`}
+                    className="flex h-10 w-10 items-center justify-center border border-line text-bone/80 active:text-saffron"
+                  >
+                    <SocialIcon name={s.icon} className="h-5 w-5" />
+                  </a>
+                ))}
+              </div>
               <div className="pt-3 text-bone/40">
                 <BaseClock />
               </div>

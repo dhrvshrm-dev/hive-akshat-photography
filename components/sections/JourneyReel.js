@@ -6,7 +6,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import GLContours from "@/components/webgl/GLContours";
 import { journeys } from "@/data/journeys";
 import { photo } from "@/data/photos";
@@ -45,8 +46,8 @@ function Panel({ j, i, progress, count }) {
         <p className="font-display text-lg italic text-ember">{j.kicker}</p>
         <h3 className="mt-1 font-display text-4xl leading-none text-bone md:text-6xl">{j.name}</h3>
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-hud text-bone/60">
-          <span>{fmtCoords(j.lat, j.lon)}</span>
-          <span>Best light {j.bestLight.split(" · ")[0]}</span>
+          <span>{j.abroad ? j.kicker : fmtCoords(j.lat, j.lon)}</span>
+          <span>{j.region}</span>
           <span className="text-saffron opacity-0 transition-opacity group-hover:opacity-100">Open journey →</span>
         </div>
       </div>
@@ -113,7 +114,7 @@ export default function JourneyReel() {
                   <span className="italic text-ember">One road.</span>
                 </h2>
                 <p className="mt-6 max-w-sm text-bone/60">
-                  From the ghats of Pushkar to 5,430 metres in North Sikkim. Keep scrolling — the road goes sideways.
+                  From the ghats of Pushkar to the Rann of Kutch, the north-east and beyond India. Keep scrolling — the road goes sideways.
                 </p>
               </div>
               <p className="font-mono text-[10px] uppercase tracking-hud text-bone/40">Scroll →</p>

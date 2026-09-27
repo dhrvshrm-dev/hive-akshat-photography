@@ -9,8 +9,8 @@ const nextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com" }],
   },
   async redirects() {
-    // The portfolio used to live at /work.
-    return [{ source: "/work", destination: "/journeys", permanent: true }];
+    // Services became Work once it was clear Akshat does not take commercial shoots.
+    return [{ source: "/services", destination: "/work", permanent: true }];
   },
 };
 

@@ -56,17 +56,17 @@ export default function ServiceList() {
                     <div>
                       <p className="font-display text-2xl italic text-ember">{s.short}</p>
                       <p className="mt-5 max-w-lg text-bone/70">{s.summary}</p>
-                      <p className="mt-8 font-mono text-[10px] uppercase tracking-hud text-bone/40">For</p>
+                      <p className="mt-8 font-mono text-[10px] uppercase tracking-hud text-bone/40">Where</p>
                       <div className="mt-3 flex flex-wrap gap-2">
-                        {s.forWhom.map((f) => (
+                        {s.where.map((f) => (
                           <span key={f} className="border border-line px-3 py-1.5 font-mono text-[10px] uppercase tracking-hud text-bone/80">
                             {f}
                           </span>
                         ))}
                       </div>
-                      <p className="mt-8 font-mono text-[10px] uppercase tracking-hud text-bone/40">Includes</p>
+                      <p className="mt-8 font-mono text-[10px] uppercase tracking-hud text-bone/40">Highlights</p>
                       <ul className="mt-3 space-y-2">
-                        {s.points.map((pt) => (
+                        {s.highlights.map((pt) => (
                           <li key={pt} className="flex items-center gap-3 text-bone">
                             <span className="h-1.5 w-1.5 rounded-full bg-saffron" />
                             {pt}
