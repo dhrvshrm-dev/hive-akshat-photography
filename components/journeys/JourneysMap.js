@@ -4,9 +4,9 @@
 // light up one by one. Every photograph in the archive is a faint dot where it
 // was made. Hover (or tap) a pin or a list entry and the two light up together
 // with a preview of that journey's cover; click to go to its chapter.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { INDIA, project } from "@/data/indiaMap";
 import { abroadJourneys, indiaJourneys as journeys } from "@/data/journeys";
@@ -15,6 +15,38 @@ import { site } from "@/data/site";
 import { fmtCoords } from "@/lib/format";
 import { scrollToTarget } from "@/lib/scroll";
 import { ease } from "@/lib/motion";
+
+/**
+ * A path that draws itself in when it scrolls into view.
+ *
+ * Done by hand rather than with framer-motion's `pathLength`: that relies on the
+ * SVG pathLength attribute, which Safari ignores in combination with
+ * vector-effect — on an iPhone the outline simply never appeared. Here the real
+ * length is measured with getTotalLength() and the dash offset is animated in
+ * the path's own units, which every browser agrees on.
+ */
+function DrawPath({ delay = 0, duration = 2, reduce, ...props }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-10%" });
+  const [len, setLen] = useState(null);
+  useEffect(() => {
+    if (ref.current) setLen(Math.ceil(ref.current.getTotalLength()) + 2);
+  }, [props.d]);
+  if (reduce || len == null) {
+    // Until measured (first paint) it is invisible, so nothing flashes in whole.
+    return <path ref={ref} {...props} style={{ opacity: reduce ? 1 : 0 }} />;
+  }
+  return (
+    <motion.path
+      ref={ref}
+      {...props}
+      strokeDasharray={`${len} ${len}`}
+      initial={{ strokeDashoffset: len }}
+      animate={inView ? { strokeDashoffset: 0 } : { strokeDashoffset: len }}
+      transition={{ delay, duration, ease: "easeInOut" }}
+    />
+  );
+}
 
 // Catmull-Rom through the pins, as cubic Béziers — a road, not a zig-zag.
 function smoothPath(pts) {
@@ -38,24 +70,24 @@ export default function JourneysMap() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(null);
 
-  const pins = useMemo(() => journeys.map((j) => ({ ...j, xy: project(j.lat, j.lon) })), []);
+  const pins = useMemo(
+    () => journeys.map((j) => ({ ...j, xy: project(j.lat, j.lon) })),
+    [],
+  );
   const base = project(site.base.lat, site.base.lon);
-  const route = useMemo(() => smoothPath([base, ...pins.map((p) => p.xy)]), [pins, base]);
+  const route = useMemo(
+    () => smoothPath([base, ...pins.map((p) => p.xy)]),
+    [pins, base],
+  );
   const dots = useMemo(
-    () => photos.filter((p) => p.archive !== false && !p.abroad).map((p) => ({ id: p.id, xy: project(p.lat, p.lon) })),
-    []
+    () =>
+      photos
+        .filter((p) => p.archive !== false && !p.abroad)
+        .map((p) => ({ id: p.id, xy: project(p.lat, p.lon) })),
+    [],
   );
 
   const go = (slug) => scrollToTarget(`#${slug}`);
-  const draw = (delay, duration) =>
-    reduce
-      ? {}
-      : {
-          initial: { pathLength: 0 },
-          whileInView: { pathLength: 1 },
-          viewport: { once: true, margin: "-10%" },
-          transition: { delay, duration, ease: "easeInOut" },
-        };
 
   const activeJ = active != null ? pins[active] : null;
 
@@ -74,29 +106,41 @@ export default function JourneysMap() {
               className="group flex w-full items-baseline justify-between gap-4 py-4 text-left"
             >
               <span className="flex items-baseline gap-4">
-                <span className={`font-mono text-[10px] ${active === i ? "text-saffron" : "text-bone/40"}`}>
+                <span
+                  className={`font-mono text-[10px] ${active === i ? "text-saffron" : "text-bone/40"}`}
+                >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className={`font-display text-2xl transition-colors md:text-3xl ${active === i ? "text-saffron" : "text-bone"}`}>
+                <span
+                  className={`font-display text-2xl transition-colors md:text-3xl ${active === i ? "text-saffron" : "text-bone"}`}
+                >
                   {j.name}
                 </span>
               </span>
-              <span className="hidden font-mono text-[10px] uppercase tracking-hud text-bone/40 sm:inline">{j.season}</span>
+              <span className="hidden font-mono text-[10px] uppercase tracking-hud text-bone/40 sm:inline">
+                {j.season}
+              </span>
             </button>
           </li>
         ))}
       </ol>
       {abroadJourneys.length > 0 && (
         <div className="order-3 lg:col-start-1">
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-hud text-bone/45">Beyond India</p>
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-hud text-bone/45">
+            Beyond India
+          </p>
           {abroadJourneys.map((j) => (
             <button
               key={j.slug}
               onClick={() => go(j.slug)}
               className="group flex w-full items-baseline justify-between gap-4 border-y border-line py-4 text-left"
             >
-              <span className="font-display text-2xl text-bone transition-colors group-hover:text-saffron md:text-3xl">{j.kicker}</span>
-              <span className="font-mono text-[10px] uppercase tracking-hud text-bone/40">→</span>
+              <span className="font-display text-2xl text-bone transition-colors group-hover:text-saffron md:text-3xl">
+                {j.kicker}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-hud text-bone/40">
+                →
+              </span>
             </button>
           ))}
         </div>
@@ -110,21 +154,37 @@ export default function JourneysMap() {
           role="img"
           aria-label="Map of India with the route between each journey"
         >
-          <motion.path
+          <path d={INDIA.d} fill="rgba(237,230,218,0.025)" stroke="none" />
+          <DrawPath
             d={INDIA.d}
-            fill="rgba(237,230,218,0.025)"
-            stroke="rgba(237,230,218,0.45)"
-            strokeWidth="1.2"
-            vectorEffect="non-scaling-stroke"
-            {...draw(0, 2.6)}
+            fill="none"
+            stroke="rgba(237,230,218,0.5)"
+            strokeWidth="2.2"
+            strokeLinejoin="round"
+            reduce={reduce}
+            delay={0}
+            duration={2.6}
           />
           {/* Latitude lines, like a survey sheet */}
           {[10, 15, 20, 25, 30, 35].map((lat) => {
             const [, y] = project(lat, 70);
             return (
               <g key={lat}>
-                <line x1={-PAD} x2={INDIA.width + PAD} y1={y} y2={y} stroke="rgba(237,230,218,0.06)" strokeDasharray="2 8" />
-                <text x={INDIA.width + PAD - 4} y={y - 6} textAnchor="end" className="fill-bone/30 font-mono" style={{ fontSize: 16 }}>
+                <line
+                  x1={-PAD}
+                  x2={INDIA.width + PAD}
+                  y1={y}
+                  y2={y}
+                  stroke="rgba(237,230,218,0.06)"
+                  strokeDasharray="2 8"
+                />
+                <text
+                  x={INDIA.width + PAD - 4}
+                  y={y - 6}
+                  textAnchor="end"
+                  className="fill-bone/30 font-mono"
+                  style={{ fontSize: 16 }}
+                >
                   {lat}°N
                 </text>
               </g>
@@ -132,24 +192,46 @@ export default function JourneysMap() {
           })}
 
           {dots.map((d) => (
-            <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r="3" className="fill-bone/30" />
+            <circle
+              key={d.id}
+              cx={d.xy[0]}
+              cy={d.xy[1]}
+              r="3"
+              className="fill-bone/30"
+            />
           ))}
 
-          <motion.path
+          <DrawPath
             d={route}
             fill="none"
             stroke="#F0782D"
-            strokeWidth="1.5"
-            strokeDasharray="1 7"
+            strokeWidth="2.6"
             strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-            {...draw(1.6, 3.2)}
+            reduce={reduce}
+            delay={1.6}
+            duration={3.2}
           />
 
           {/* Base camp */}
           <g transform={`translate(${base[0]} ${base[1]})`}>
-            <rect x="-9" y="-9" width="18" height="18" fill="none" stroke="#EDE6DA" strokeWidth="1.5" vectorEffect="non-scaling-stroke" transform="rotate(45)" />
-            <text x="0" y="40" textAnchor="middle" className="fill-bone font-mono" style={{ fontSize: 16, letterSpacing: 2 }}>
+            <rect
+              x="-9"
+              y="-9"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="#EDE6DA"
+              strokeWidth="1.5"
+              vectorEffect="non-scaling-stroke"
+              transform="rotate(45)"
+            />
+            <text
+              x="0"
+              y="40"
+              textAnchor="middle"
+              className="fill-bone font-mono"
+              style={{ fontSize: 16, letterSpacing: 2 }}
+            >
               BASE · AJMER
             </text>
           </g>
@@ -178,11 +260,28 @@ export default function JourneysMap() {
                   strokeWidth="1"
                   vectorEffect="non-scaling-stroke"
                   animate={{ r: [8, 24], opacity: [0.8, 0] }}
-                  transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.3, ease: "easeOut" }}
+                  transition={{
+                    duration: 2.4,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                    ease: "easeOut",
+                  }}
                 />
               )}
-              <circle r={active === i ? 9 : 6} fill={active === i ? "#F0782D" : "#0A0908"} stroke="#F0782D" strokeWidth="2" vectorEffect="non-scaling-stroke" style={{ transition: "r 200ms" }} />
-              <text x="16" y="6" className={`font-mono ${active === i ? "fill-saffron" : "fill-bone/70"}`} style={{ fontSize: 17 }}>
+              <circle
+                r={active === i ? 9 : 6}
+                fill={active === i ? "#F0782D" : "#0A0908"}
+                stroke="#F0782D"
+                strokeWidth="2"
+                vectorEffect="non-scaling-stroke"
+                style={{ transition: "r 200ms" }}
+              />
+              <text
+                x="16"
+                y="6"
+                className={`font-mono ${active === i ? "fill-saffron" : "fill-bone/70"}`}
+                style={{ fontSize: 17 }}
+              >
                 {String(i + 1).padStart(2, "0")}
               </text>
             </motion.g>
@@ -206,14 +305,24 @@ export default function JourneysMap() {
               }}
             >
               <span className="relative block aspect-[4/3] overflow-hidden">
-                <Image src={photo(activeJ.cover).src} alt="" fill sizes="240px" className="object-cover" />
+                <Image
+                  src={photo(activeJ.cover).src}
+                  alt=""
+                  fill
+                  sizes="240px"
+                  className="object-cover"
+                />
               </span>
               <span className="block p-3">
-                <span className="block font-display text-xl text-bone">{activeJ.name}</span>
+                <span className="block font-display text-xl text-bone">
+                  {activeJ.name}
+                </span>
                 <span className="mt-1 block font-mono text-[9px] uppercase tracking-hud text-bone/50">
                   {fmtCoords(activeJ.lat, activeJ.lon)}
                 </span>
-                <span className="mt-2 block font-mono text-[9px] uppercase tracking-hud text-saffron">Open chapter →</span>
+                <span className="mt-2 block font-mono text-[9px] uppercase tracking-hud text-saffron">
+                  Open chapter →
+                </span>
               </span>
             </motion.button>
           )}
