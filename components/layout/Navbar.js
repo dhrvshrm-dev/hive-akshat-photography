@@ -101,9 +101,15 @@ export default function Navbar() {
         />
         <nav className="relative mx-auto flex max-w-[110rem] items-start justify-between px-5 py-5 md:px-8">
           <Link href="/" className="group relative z-10 block leading-none">
-            <span className="block font-display text-[1.6rem] tracking-tight text-bone">
-              {site.name}
-            </span>
+            {/* His logo (white on transparent, from his brand kit). */}
+            <Image
+              src="/logo.png"
+              alt={site.name}
+              width={720}
+              height={240}
+              priority
+              className="h-9 w-auto md:h-12"
+            />
             <span className="mt-1 block font-mono text-[9px] uppercase tracking-hud text-bone/45 transition-colors group-hover:text-saffron">
               {fmtCoords(site.base.lat, site.base.lon)}
             </span>

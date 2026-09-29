@@ -6,7 +6,12 @@
 // with a preview of that journey's cover; click to go to its chapter.
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useAnimationControls, useInView } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useAnimationControls,
+  useInView,
+} from "framer-motion";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { INDIA, project } from "@/data/indiaMap";
 import { abroadJourneys, indiaJourneys as journeys } from "@/data/journeys";
@@ -41,7 +46,10 @@ function DrawPath({ delay = 0, duration = 2, reduce, inView, ...props }) {
   // Then draw it when the map comes into view.
   useEffect(() => {
     if (len == null || !inView) return;
-    controls.start({ strokeDashoffset: 0, transition: { delay, duration, ease: "easeInOut" } });
+    controls.start({
+      strokeDashoffset: 0,
+      transition: { delay, duration, ease: "easeInOut" },
+    });
   }, [len, inView, delay, duration, controls]);
 
   return (
@@ -85,6 +93,28 @@ export default function JourneysMap() {
     [],
   );
   const base = project(site.base.lat, site.base.lon);
+  // Rajasthan is crowded with pins, so a number is only drawn where it has
+  // room — never over another pin, number or the base label. The rest show on
+  // hover, and the list beside the map carries every number anyway.
+  const roomy = useMemo(() => {
+    const boxes = [[base[0] - 70, base[1] + 22, base[0] + 70, base[1] + 46]];
+    const hit = (a, b) =>
+      a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+    return pins.map((p, i) => {
+      const box = [p.xy[0] + 12, p.xy[1] - 12, p.xy[0] + 44, p.xy[1] + 10];
+      const onPin = pins.some(
+        (q, k) =>
+          k !== i &&
+          q.xy[0] > box[0] - 8 &&
+          q.xy[0] < box[2] + 8 &&
+          q.xy[1] > box[1] - 8 &&
+          q.xy[1] < box[3] + 8,
+      );
+      if (onPin || boxes.some((b) => hit(b, box))) return false;
+      boxes.push(box);
+      return true;
+    });
+  }, [pins, base]);
   const route = useMemo(
     () => smoothPath([base, ...pins.map((p) => p.xy)]),
     [pins, base],
@@ -293,7 +323,11 @@ export default function JourneysMap() {
                 x="16"
                 y="6"
                 className={`font-mono ${active === i ? "fill-saffron" : "fill-bone/70"}`}
-                style={{ fontSize: 17 }}
+                style={{
+                  fontSize: 17,
+                  opacity: roomy[i] || active === i ? 1 : 0,
+                  transition: "opacity 200ms",
+                }}
               >
                 {String(i + 1).padStart(2, "0")}
               </text>

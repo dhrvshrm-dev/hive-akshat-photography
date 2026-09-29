@@ -16,7 +16,7 @@ export const films = [
     credit: "Director of Photography",
     place: "Pushkar, Rajasthan",
     note: "Singer: Jeet Sharmaa",
-    poster: "pushkar-ghats",
+    poster: "pushkar-ghats-sunset",
     lens: "Cinema",
   },
   {
@@ -36,7 +36,7 @@ export const films = [
     title: "Jodhpur from the air",
     kind: "Drone",
     place: "Jodhpur, Rajasthan",
-    poster: "jodhpur-blue",
+    poster: "jodhpur-clocktower",
     osd: { alt: 120, speed: 6.4, dist: 1.2 },
   },
   {
@@ -46,7 +46,7 @@ export const films = [
     title: "Varanasi from the air",
     kind: "Drone",
     place: "Varanasi, Uttar Pradesh",
-    poster: "varanasi-ghats",
+    poster: "dev-deepawali-ghats",
     osd: { alt: 80, speed: 4.8, dist: 0.9 },
   },
   {
@@ -56,7 +56,7 @@ export const films = [
     title: "Amer Fort, aerial",
     kind: "Drone",
     place: "Jaipur, Rajasthan",
-    poster: "amber-fort",
+    poster: "amer-aerial",
     osd: { alt: 110, speed: 5.1, dist: 1.1 },
   },
   {
@@ -76,7 +76,7 @@ export const films = [
     title: "Maha Aarti at Pushkar Sarovar",
     kind: "Reel",
     place: "Pushkar, Rajasthan",
-    poster: "pushkar-ghats",
+    poster: "brahma-temple-night",
     lens: "Night",
   },
 ];

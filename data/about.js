@@ -21,7 +21,7 @@ export const lens = [
   {
     title: "Heritage & Rajasthan",
     text: "Coming from Ajmer, a historic cultural center, Akshat seeks to present Rajasthan not simply as a tourist destination, but as a living cultural landscape. Through ground-based and aerial photography, he has documented the state's forts, palaces, temples, stepwells, festivals, and people.",
-    image: "amber-fort",
+    image: "amer-sunrise",
   },
   {
     title: "Wildlife & Nature",
@@ -36,7 +36,7 @@ export const lens = [
   {
     title: "Film & Video Production",
     text: "Akshat works extensively in cinematic filmmaking, combining drone footage, cultural storytelling, and music. A notable project includes his role as Director of Photography for the song “PUSKAR”, capturing the essence of the holy town's cultural landscape.",
-    image: "pushkar-ghats",
+    image: "pushkar-sunset-aerial",
   },
 ];
 

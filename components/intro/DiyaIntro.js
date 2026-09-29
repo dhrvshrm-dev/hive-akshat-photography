@@ -1,8 +1,8 @@
 "use client";
 // The first thing a new visitor sees: darkness, and a diya.
 //
-// The pointer carries a lamp flame. Wherever it goes, the night aarti at
-// Dashashwamedh Ghat is revealed in a warm, flickering pool of light — the rest
+// The pointer carries a lamp flame. Wherever it goes, Dev Deepawali on the
+// ghats of Varanasi is revealed in a warm, flickering pool of light — the rest
 // of the frame stays black. Press and hold, and the lamp is lit: the light
 // swells until it fills the screen, and the site is revealed behind it as dawn.
 //
@@ -17,7 +17,7 @@ import { fmtCoords, fmtTakenTime } from "@/lib/format";
 
 const HOLD_MS = 1300;
 const DAWN_MS = 1700;
-const shot = photo("varanasi-puja");
+const shot = photo("dev-deepawali-lamps");
 
 // Cheap 1D value noise — enough to make a flame breathe without looking periodic.
 function noise1(t) {

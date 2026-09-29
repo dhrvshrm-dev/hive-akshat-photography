@@ -86,6 +86,16 @@ export default function Footer() {
           Hive Akshat
         </p>
 
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.png"
+          alt={site.name}
+          width={720}
+          height={240}
+          loading="lazy"
+          className="mx-auto mt-10 h-14 w-auto opacity-80 md:h-16"
+        />
+
         <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 font-mono text-[10px] uppercase tracking-hud text-bone/40 md:flex-row md:items-center md:justify-between">
           <span>
             © {new Date().getFullYear()} {site.name} · {site.person}

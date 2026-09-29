@@ -83,7 +83,7 @@ export const services = [
       "Cinematic filmmaking that combines drone footage, cultural storytelling and music — Director of Photography for the songs “PUSHKAR” and “Train Pakad Le”, sung by Jeet Sharmaa.",
     where: ["Pushkar", "Rajasthan"],
     highlights: ["PUSHKAR", "Train Pakad Le", "Drone films & reels"],
-    image: "pushkar-ghats",
+    image: "pushkar-ghats-sunset",
   },
   {
     key: "tourism",
@@ -107,7 +107,7 @@ export const services = [
       "Digital content creation",
       "Observational photography",
     ],
-    image: "akshat-pushkar",
+    image: "workshop-talk",
   },
 ];
 
