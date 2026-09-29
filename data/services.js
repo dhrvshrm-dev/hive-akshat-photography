@@ -1,6 +1,6 @@
 // What Akshat shoots, on /work. He does not take commercial shoots — this is his
 // own practice, plus the collaborations and talks that grow out of it.
-// `image` is an id from data/photos.js (placeholders until his frames arrive).
+// `image` is an id from data/photos.js.
 //
 //   where       places or subjects, shown as tags
 //   highlights  short bullets
@@ -48,7 +48,7 @@ export const services = [
       "Star fields and the Milky Way — the desert and the hills after dark.",
     where: ["Rajasthan"],
     highlights: ["Milky Way", "Star fields", "Nightscapes"],
-    image: "milky-way",
+    image: "ajmer-clouds-dawn",
   },
   {
     key: "aerial",

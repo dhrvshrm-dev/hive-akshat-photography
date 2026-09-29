@@ -291,12 +291,16 @@ export default function AboutPage() {
                 {ventures.hospitality.items.map((v, i) => (
                   <Reveal key={v.name} delay={i * 0.1}>
                     <article className="group">
-                      <FocusImage
-                        p={photo(v.image)}
-                        inView
-                        sizes="(min-width:640px) 30vw, 100vw"
-                        className="relative aspect-[4/5] bg-ink/10"
-                      />
+                      {v.image ? (
+                        <FocusImage
+                          p={photo(v.image)}
+                          inView
+                          sizes="(min-width:640px) 30vw, 100vw"
+                          className="relative aspect-[4/5] bg-ink/10"
+                        />
+                      ) : (
+                        <span className="block h-px w-12 bg-saffron" />
+                      )}
                       <p className="mt-5 font-mono text-[10px] uppercase tracking-hud text-ink/50">
                         {v.kind} · {v.place}
                       </p>

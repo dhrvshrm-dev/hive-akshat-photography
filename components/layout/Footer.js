@@ -115,9 +115,6 @@ export default function Footer() {
             </span>
           </a>
           <span className="flex items-center gap-6">
-            <Link href="/credits" className="link-sweep hover:text-bone">
-              Photo credits
-            </Link>
             <BackToTop />
           </span>
         </div>

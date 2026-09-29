@@ -26,7 +26,7 @@ export const films = [
     credit: "Director of Photography",
     place: "Rajasthan",
     note: "Singer: Jeet Sharmaa",
-    poster: "ajmer-jhonpra-arch",
+    poster: "ajmer-station-night",
     lens: "Cinema",
   },
   {

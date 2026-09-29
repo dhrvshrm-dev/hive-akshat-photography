@@ -16,7 +16,7 @@ export const philosophyLines = [
 export const philosophyNote =
   "For Akshat, the camera is a tool to preserve emotions, places, and moments for generations to come, encouraging responsible tourism and fostering a deeper appreciation for India's natural and cultural treasures.";
 
-// "A Journey Through the Lens". `image` is a placeholder id from data/photos.js.
+// "A Journey Through the Lens". `image` is an id from data/photos.js.
 export const lens = [
   {
     title: "Heritage & Rajasthan",
@@ -97,14 +97,12 @@ export const ventures = {
         place: "Pushkar",
         kind: "Resort",
         text: "A premier resort connecting guests with Rajasthan's landscapes and culture.",
-        image: "serene-aravali",
       },
       {
         name: "Hotel New Holiday Inn",
         place: "Ajmer",
         kind: "Hotel",
         text: "An integral part of Ajmer's growing tourism ecosystem.",
-        image: "new-holiday-inn",
       },
     ],
   },
