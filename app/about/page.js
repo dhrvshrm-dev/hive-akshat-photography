@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { pageMeta } from "@/lib/seo";
 import PageHeader from "@/components/ui/PageHeader";
 import Container from "@/components/ui/Container";
@@ -44,6 +45,24 @@ const stats = [
     label: "Institutions & ventures",
   },
 ];
+
+/** A venture's website or booking page, opened in a new tab. Shows the
+ *  domain unless a label is given. */
+function VentureLink({ url, label }) {
+  const host = new URL(url).hostname.replace(/^www\./, "");
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group/link mt-3 flex w-fit items-center gap-2 font-mono text-[10px] uppercase tracking-hud text-ink/60 transition-colors hover:text-saffron"
+    >
+      <span className="h-px w-5 bg-current transition-all group-hover/link:w-8" />
+      {label || host}
+      <span aria-hidden="true">↗</span>
+    </a>
+  );
+}
 
 export default function AboutPage() {
   return (
@@ -276,6 +295,7 @@ export default function AboutPage() {
                           {v.kind}
                           {v.place ? ` · ${v.place}` : ""}
                         </span>
+                        {v.url && <VentureLink url={v.url} />}
                       </span>
                     </div>
                   </Reveal>
@@ -292,12 +312,18 @@ export default function AboutPage() {
                   <Reveal key={v.name} delay={i * 0.1}>
                     <article className="group">
                       {v.image ? (
-                        <FocusImage
-                          p={photo(v.image)}
-                          inView
-                          sizes="(min-width:640px) 30vw, 100vw"
-                          className="relative aspect-[4/5] bg-ink/10"
-                        />
+                        <div className="relative aspect-[3/2] overflow-hidden bg-ink/10">
+                          <Image
+                            src={v.image}
+                            alt={`${v.name}, ${v.place}`}
+                            fill
+                            sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 100vw"
+                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                            style={{
+                              objectPosition: `${(v.focus?.[0] ?? 0.5) * 100}% ${(v.focus?.[1] ?? 0.5) * 100}%`,
+                            }}
+                          />
+                        </div>
                       ) : (
                         <span className="block h-px w-12 bg-saffron" />
                       )}
@@ -308,6 +334,10 @@ export default function AboutPage() {
                         {v.name}
                       </h3>
                       <p className="mt-3 text-ink/70">{v.text}</p>
+                      {v.url && <VentureLink url={v.url} />}
+                      {v.links?.map((l) => (
+                        <VentureLink key={l.url} url={l.url} label={l.label} />
+                      ))}
                     </article>
                   </Reveal>
                 ))}

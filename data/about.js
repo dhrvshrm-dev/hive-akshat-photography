@@ -58,7 +58,9 @@ export const path = [
   "Entrepreneurship",
 ];
 
-// Ventures. `logo` / `image` are optional paths in /public — FILL IN when supplied.
+// Ventures. `url` is the venture's own website and `links` any extra ones
+// (e.g. booking pages); `image` is an optional path in /public, cropped around
+// `focus` ([x, y] fractions, centre by default).
 // His role across the institutions and ventures.
 export const ventureRole = "Managing Director";
 
@@ -71,11 +73,13 @@ export const ventures = {
         name: "Queen Mary's School",
         place: "Ramnagar & Nasirabad",
         kind: "School",
+        url: "https://qmsnasirabad.co.in/",
       },
       {
         name: "Queen Mary's Girls School",
         place: "Ajmer · Nasirabad",
         kind: "School",
+        url: "https://www.qmgsajmer.com/",
       },
       {
         name: "Queen Mary's Institute of Hotel Management",
@@ -96,13 +100,28 @@ export const ventures = {
         name: "Serene Aravali Resort",
         place: "Pushkar",
         kind: "Resort",
+        url: "https://serenearavali.com/",
         text: "A premier resort connecting guests with Rajasthan's landscapes and culture.",
+        // A wide banner: `focus` keeps the tents in the cropped card.
+        image: "/images/serene-aravali-puskar-banner.jpg",
+        focus: [0.78, 0.6],
       },
       {
         name: "Hotel New Holiday Inn",
         place: "Ajmer",
         kind: "Hotel",
         text: "An integral part of Ajmer's growing tourism ecosystem.",
+        image: "/images/new-holiday-inn.jpg",
+        links: [
+          {
+            label: "Book on Booking.com",
+            url: "https://www.booking.com/hotel/in/a-luxury-in-bk-kaul-nagar-holiday-inn.html",
+          },
+          {
+            label: "Book on MakeMyTrip",
+            url: "https://www.makemytrip.com/hotels/new_holiday_inn-details-ajmer.html",
+          },
+        ],
       },
     ],
   },
